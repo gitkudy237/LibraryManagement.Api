@@ -23,4 +23,13 @@ public class AuthorsController : ControllerBase
         return author is null ?
             NotFound() : Ok(author);
     }
+
+    [HttpPost]
+    public async Task<ActionResult<Author>> CreateAuthor([FromBody] Author author)
+    {
+        await _context.Authors.AddAsync(author);
+        await _context.SaveChangesAsync();
+
+        return Ok(author);
+    }
 }
