@@ -25,4 +25,11 @@ public static class AuthorMappings
             DateOfBirth = authorModel.DateOfBirth,
         };
     }
+
+    public static void MapUpdateAuthor(this Author authorModel, UpdateAuthorDto updateAuthorDto)
+    {
+        authorModel.Name = updateAuthorDto.Name;
+        authorModel.Bio = updateAuthorDto.Bio;
+        authorModel.DateOfBirth = updateAuthorDto.DateOfBirth;
+    }
 }

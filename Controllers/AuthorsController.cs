@@ -45,4 +45,18 @@ public class AuthorsController : ControllerBase
 
         return Ok(author.ToAuthorDto());
     }
+
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult> UpdateAuthor([FromRoute] int id, [FromBody] UpdateAuthorDto updateAuthorDto)
+    {
+        var existingAuthor = await _context.Authors.FindAsync(id);
+
+        if (existingAuthor is null) 
+            return NotFound("Attempt to update unexisting author");
+
+        existingAuthor.MapUpdateAuthor(updateAuthorDto);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }
