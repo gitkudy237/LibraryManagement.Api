@@ -29,4 +29,13 @@ public static class BookMappings
             AuthorId = bookModel.AuthorId,
         };
     }
+
+    public static void MapUpdateBook(this Book bookModel, UpdateBookDto updateBookDto)
+    {
+        bookModel.Title = updateBookDto.Title;
+        bookModel.Isbn = updateBookDto.Isbn;
+        bookModel.PublicationYear = updateBookDto.PublicationYear;
+        bookModel.AvailableCopies = updateBookDto.AvailableCopies;
+        bookModel.AuthorId = updateBookDto.AuthorId;
+    }
 }

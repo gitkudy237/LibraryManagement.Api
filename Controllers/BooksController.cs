@@ -47,5 +47,19 @@ namespace LibraryManagement.Controllers
 
             return Ok(book.ToBookDto());
         }
+
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> UpdateBook([FromRoute] int id, [FromBody] UpdateBookDto updateBookDto)
+        {
+            var book = await _context.Books.FindAsync(id);
+
+            if (book is null)
+                return NotFound("Attempt to update unexisting book");
+
+            book.MapUpdateBook(updateBookDto);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }
