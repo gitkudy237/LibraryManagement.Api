@@ -3,6 +3,7 @@ using LibraryManagement.Mappings;
 using LibraryManagement.Models;
 using LibraryManagement.Persistence;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagement.Controllers;
 
@@ -24,6 +25,15 @@ public class AuthorsController : ControllerBase
 
         return author is null ?
             NotFound() : Ok(author.ToAuthorDto());
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<List<AuthorDto>>> GetAuthors()
+    {
+        var authors = await _context.Authors.ToListAsync();
+        var result = authors.Select(auth => auth.ToAuthorDto());
+
+        return Ok(result);
     }
 
     [HttpPost]
