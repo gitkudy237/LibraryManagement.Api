@@ -1,4 +1,5 @@
 ﻿using LibraryManagement.Dtos.BookDtos;
+using LibraryManagement.Dtos.QueryObjectDto;
 using LibraryManagement.Mappings;
 using LibraryManagement.Models;
 using LibraryManagement.Persistence;
@@ -29,10 +30,22 @@ namespace LibraryManagement.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<BookDto>>> GetBooks()
+        public async Task<ActionResult<List<BookDto>>> GetBooks([FromQuery] BookQueryObjectDto bookQueryObjDto)
         {
-            var books = await _context.Books.ToListAsync();
-            var result = books.Select(b => b.ToBookDto());
+            var query = _context.Books
+                .Include(b => b.Author)
+                .AsQueryable();
+
+            var bookQueryObj = bookQueryObjDto.ToBookQueryObjectModel();
+
+            if (!string.IsNullOrWhiteSpace(bookQueryObj.Title))
+                query = query.Where(b => b.Title.Contains(bookQueryObj.Title));
+
+            if (!string.IsNullOrWhiteSpace(bookQueryObj.AuthorName))
+                query = query.Where(b => b.Author.Name.Contains(bookQueryObj.AuthorName));
+
+            var queryResult = await query.ToListAsync();
+            var result = queryResult.Select(b => b.ToBookDto());
 
             return Ok(result);
         }
