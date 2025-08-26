@@ -1,4 +1,6 @@
-﻿using LibraryManagement.Models;
+﻿using LibraryManagement.Dtos;
+using LibraryManagement.Mappings;
+using LibraryManagement.Models;
 using LibraryManagement.Persistence;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,8 +27,9 @@ public class AuthorsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Author>> CreateAuthor([FromBody] Author author)
+    public async Task<ActionResult<Author>> CreateAuthor([FromBody] CreateAuthorDto createAuthorDto)
     {
+        var author = createAuthorDto.ToAuthorModel();
         await _context.Authors.AddAsync(author);
         await _context.SaveChangesAsync();
 
