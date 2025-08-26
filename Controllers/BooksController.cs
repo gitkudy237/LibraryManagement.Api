@@ -44,6 +44,13 @@ namespace LibraryManagement.Controllers
             if (!string.IsNullOrWhiteSpace(bookQueryObj.AuthorName))
                 query = query.Where(b => b.Author.Name.Contains(bookQueryObj.AuthorName));
 
+            if (!string.IsNullOrWhiteSpace(bookQueryObj.SortBy))
+            {
+                if (bookQueryObj.SortBy.Equals("Title", StringComparison.CurrentCultureIgnoreCase))
+                    query = bookQueryObj.IsSortAscending ?
+                        query.OrderBy(b => b.Title) : query.OrderByDescending(b => b.Title);
+            }
+
             var queryResult = await query.ToListAsync();
             var result = queryResult.Select(b => b.ToBookDto());
 

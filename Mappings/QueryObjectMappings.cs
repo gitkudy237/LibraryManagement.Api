@@ -11,6 +11,8 @@ public static class QueryObjectMappings
         {
             Title = bookQueryObjectDto.Title,
             AuthorName = bookQueryObjectDto.AuthorName,
+            SortBy = bookQueryObjectDto.SortBy,
+            IsSortAscending = bookQueryObjectDto.IsSortAscending,
         };
     }
 }
