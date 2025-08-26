@@ -13,6 +13,8 @@ public static class QueryObjectMappings
             AuthorName = bookQueryObjectDto.AuthorName,
             SortBy = bookQueryObjectDto.SortBy,
             IsSortAscending = bookQueryObjectDto.IsSortAscending,
+            PageNumber = bookQueryObjectDto.PageNumber,
+            PageSize = bookQueryObjectDto.PageSize,
         };
     }
 }

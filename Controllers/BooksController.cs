@@ -38,18 +38,27 @@ namespace LibraryManagement.Controllers
 
             var bookQueryObj = bookQueryObjDto.ToBookQueryObjectModel();
 
+            // filtering
             if (!string.IsNullOrWhiteSpace(bookQueryObj.Title))
                 query = query.Where(b => b.Title.Contains(bookQueryObj.Title));
 
             if (!string.IsNullOrWhiteSpace(bookQueryObj.AuthorName))
                 query = query.Where(b => b.Author.Name.Contains(bookQueryObj.AuthorName));
 
+            // sorting
             if (!string.IsNullOrWhiteSpace(bookQueryObj.SortBy))
             {
                 if (bookQueryObj.SortBy.Equals("Title", StringComparison.CurrentCultureIgnoreCase))
                     query = bookQueryObj.IsSortAscending ?
                         query.OrderBy(b => b.Title) : query.OrderByDescending(b => b.Title);
             }
+
+            // paging
+            if ((bookQueryObj.PageNumber > 0  && bookQueryObj.PageSize > 0))
+                query = query
+                    .Skip((bookQueryObj.PageNumber - 1) * bookQueryObj.PageSize)
+                    .Take(bookQueryObj.PageSize);
+
 
             var queryResult = await query.ToListAsync();
             var result = queryResult.Select(b => b.ToBookDto());
