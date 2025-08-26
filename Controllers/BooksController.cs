@@ -36,5 +36,16 @@ namespace LibraryManagement.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost]
+        public async Task<ActionResult<BookDto>> AddBook([FromBody] CreateBookDto createBookDto)
+        {
+            var book = createBookDto.ToBookModel();
+
+            await _context.Books.AddAsync(book);
+            await _context.SaveChangesAsync();
+
+            return Ok(book.ToBookDto());
+        }
     }
 }
