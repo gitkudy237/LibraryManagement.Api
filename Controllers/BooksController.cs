@@ -1,4 +1,6 @@
-﻿using LibraryManagement.Models;
+﻿using LibraryManagement.Dtos.BookDtos;
+using LibraryManagement.Mappings;
+using LibraryManagement.Models;
 using LibraryManagement.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,19 +20,21 @@ namespace LibraryManagement.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Book>> GetBook([FromRoute] int id)
+        public async Task<ActionResult<BookDto>> GetBook([FromRoute] int id)
         {
             var book = await _context.Books.FindAsync(id);
 
             return book is null ?
-                NotFound() : Ok(book);
+                NotFound() : Ok(book.ToBookDto());
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Book>>> GetBooks()
+        public async Task<ActionResult<List<BookDto>>> GetBooks()
         {
             var books = await _context.Books.ToListAsync();
-            return Ok(books);
+            var result = books.Select(b => b.ToBookDto());
+
+            return Ok(result);
         }
     }
 }

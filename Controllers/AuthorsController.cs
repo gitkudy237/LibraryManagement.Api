@@ -18,12 +18,12 @@ public class AuthorsController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<Author>> GetAuthor([FromRoute] int id)
+    public async Task<ActionResult<AuthorDto>> GetAuthor([FromRoute] int id)
     {
         var author = await _context.Authors.FindAsync(id);
 
         return author is null ?
-            NotFound() : Ok(author);
+            NotFound() : Ok(author.ToAuthorDto());
     }
 
     [HttpPost]
@@ -33,6 +33,6 @@ public class AuthorsController : ControllerBase
         await _context.Authors.AddAsync(author);
         await _context.SaveChangesAsync();
 
-        return Ok(author);
+        return Ok(author.ToAuthorDto());
     }
 }
