@@ -59,4 +59,23 @@ public class AuthorsController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult> DeleteAuthor([FromRoute] int id)
+    {
+        var existingAuthor = await _context.Authors
+            .Include(auth => auth.Books)
+            .FirstOrDefaultAsync(auth => auth.Id == id);
+
+        if (existingAuthor is null)
+            return NotFound();
+
+        if (existingAuthor.Books.Count > 0)
+            return BadRequest("Cannot delete author with one or more books");
+
+        _context.Authors.Remove(existingAuthor);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }
