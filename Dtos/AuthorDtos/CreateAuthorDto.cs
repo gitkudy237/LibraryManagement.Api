@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LibraryManagement.Dtos;
+namespace LibraryManagement.Dtos.AuthorDtos;
 
 public class CreateAuthorDto
 {
     [Required]
     [StringLength(55)]
-    public required string Name{ get; set; }
+    public required string Name { get; set; }
 
     [Required]
     [StringLength(350)]

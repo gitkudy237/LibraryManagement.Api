@@ -1,4 +1,4 @@
-﻿using LibraryManagement.Dtos;
+﻿using LibraryManagement.Dtos.AuthorDtos;
 using LibraryManagement.Mappings;
 using LibraryManagement.Models;
 using LibraryManagement.Persistence;
