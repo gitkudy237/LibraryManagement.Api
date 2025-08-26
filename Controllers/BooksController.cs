@@ -51,12 +51,26 @@ namespace LibraryManagement.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult> UpdateBook([FromRoute] int id, [FromBody] UpdateBookDto updateBookDto)
         {
-            var book = await _context.Books.FindAsync(id);
+            var existingBook = await _context.Books.FindAsync(id);
 
-            if (book is null)
+            if (existingBook is null)
                 return NotFound("Attempt to update unexisting book");
 
-            book.MapUpdateBook(updateBookDto);
+            existingBook.MapUpdateBook(updateBookDto);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> DeleteBook([FromRoute] int id)
+        {
+            var existingBook = await _context.Books.FindAsync(id);
+
+            if (existingBook is null)
+                return NotFound();
+
+            _context.Books.Remove(existingBook);
             await _context.SaveChangesAsync();
 
             return NoContent();
