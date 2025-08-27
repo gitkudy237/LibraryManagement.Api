@@ -41,15 +41,8 @@ namespace LibraryManagement.Controllers
             var bookQueryObj = bookQueryObjDto.ToBookQueryObjectModel();
 
             query = query.ApplyFiltering(bookQueryObj);
-
             query = query.ApplySorting(bookQueryObj);
-
-            // paging
-            if (bookQueryObj.PageNumber > 0 && bookQueryObj.PageSize > 0)
-                query = query
-                    .Skip((bookQueryObj.PageNumber - 1) * bookQueryObj.PageSize)
-                    .Take(bookQueryObj.PageSize);
-
+            query = query.ApplyPagination(bookQueryObj);
 
             var queryResult = await query.ToListAsync();
             var result = queryResult.Select(b => b.ToBookDto());

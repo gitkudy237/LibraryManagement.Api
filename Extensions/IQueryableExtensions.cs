@@ -26,5 +26,15 @@ namespace LibraryManagement.Extensions
 
             return query;
         }
+
+        public static IQueryable<Book> ApplyPagination(this IQueryable<Book> query, BookQueryObject bookQueryObj)
+        {
+            if (bookQueryObj.PageNumber > 0 && bookQueryObj.PageSize > 0)
+                query = query
+                    .Skip((bookQueryObj.PageNumber - 1) * bookQueryObj.PageSize)
+                    .Take(bookQueryObj.PageSize);
+
+            return query;
+        }
     }
 }
