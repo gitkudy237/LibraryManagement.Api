@@ -12,7 +12,7 @@ public class UnitOfWork : IUnitOfWork
     }
 
 
-    public async Task CompeteAsync()
+    public async Task CommitAsync()
     {
         await _context.SaveChangesAsync();
     }

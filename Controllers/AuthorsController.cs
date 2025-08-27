@@ -46,7 +46,7 @@ public class AuthorsController : ControllerBase
     {
         var author = createAuthorDto.ToAuthorModel();
         await _authorsRepository.AddAsync(author);
-        await _unitOfWork.CompeteAsync();
+        await _unitOfWork.CommitAsync();
 
         return Ok(author.ToAuthorDto());
     }
@@ -56,11 +56,11 @@ public class AuthorsController : ControllerBase
     {
         var existingAuthor = await _authorsRepository.GetByIdAsync(id);
 
-        if (existingAuthor is null) 
+        if (existingAuthor is null)
             return NotFound("Attempt to update unexisting author");
 
         existingAuthor.MapUpdateAuthor(updateAuthorDto);
-        await _unitOfWork.CompeteAsync();
+        await _unitOfWork.CommitAsync();
 
         return NoContent();
     }
@@ -77,7 +77,7 @@ public class AuthorsController : ControllerBase
             return BadRequest("Cannot delete author with one or more books");
 
         _authorsRepository.Delete(existingAuthor);
-        await _unitOfWork.CompeteAsync();
+        await _unitOfWork.CommitAsync();
 
         return NoContent();
     }

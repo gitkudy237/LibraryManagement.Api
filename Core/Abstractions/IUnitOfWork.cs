@@ -2,5 +2,5 @@
 
 public interface IUnitOfWork
 {
-    Task CompeteAsync();
+    Task CommitAsync();
 }

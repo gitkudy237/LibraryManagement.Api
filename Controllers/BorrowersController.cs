@@ -30,7 +30,7 @@ namespace LibraryManagement.Controllers
             var borrower = createBorrowerDto.ToBorrowerModel();
 
             await _borrowerRepository.AddAsync(borrower);
-            await _unitOfWork.CompeteAsync();
+            await _unitOfWork.CommitAsync();
 
             return Ok(borrower.ToBorrowerDto());
         }
@@ -62,7 +62,7 @@ namespace LibraryManagement.Controllers
                 return NotFound();
 
             existingBorrower.MapUpdateBorrower(updateBorrowerDto);
-            await _unitOfWork.CompeteAsync();
+            await _unitOfWork.CommitAsync();
 
             return NoContent();
         }
@@ -76,7 +76,7 @@ namespace LibraryManagement.Controllers
                 return NotFound();
 
             _borrowerRepository.Delete(existingBorrower);
-            await _unitOfWork.CompeteAsync();
+            await _unitOfWork.CommitAsync();
 
             return NoContent();
         }

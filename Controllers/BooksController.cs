@@ -51,7 +51,7 @@ namespace LibraryManagement.Controllers
             var book = createBookDto.ToBookModel();
 
             await _bookRepository.AddAsync(book);
-            await _unitOfWork.CompeteAsync();
+            await _unitOfWork.CommitAsync();
 
             return Ok(book.ToBookDto());
         }
@@ -65,7 +65,7 @@ namespace LibraryManagement.Controllers
                 return NotFound("Attempt to update unexisting book");
 
             existingBook.MapUpdateBook(updateBookDto);
-            await _unitOfWork.CompeteAsync();
+            await _unitOfWork.CommitAsync();
 
             return NoContent();
         }
@@ -79,7 +79,7 @@ namespace LibraryManagement.Controllers
                 return NotFound();
 
             _bookRepository.Delete(existingBook);
-            await _unitOfWork.CompeteAsync();
+            await _unitOfWork.CommitAsync();
 
             return NoContent();
         }
