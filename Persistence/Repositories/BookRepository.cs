@@ -1,0 +1,29 @@
+using LibraryManagement.Core.Abstractions;
+using LibraryManagement.Core.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace LibraryManagement.Persistence.Repositories
+{
+    public class BookRepository : IBookRepository
+    {
+        private readonly LibraryDbContext _context;
+
+        public BookRepository(LibraryDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task AddAsync(Book book)
+            => await _context.Books.AddAsync(book);
+
+        public void Delete(Book book)
+            => _context.Books.Remove(book);
+
+        public IQueryable<Book> GetAll() => _context.Books
+                .Include(b => b.Author)
+                .AsQueryable();
+
+        public async Task<Book?> GetByIdAsync(int id)
+             => await _context.Books.FindAsync(id);
+    }
+}

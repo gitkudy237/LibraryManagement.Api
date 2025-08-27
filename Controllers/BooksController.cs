@@ -1,4 +1,5 @@
-﻿using LibraryManagement.Dtos.BookDtos;
+﻿using LibraryManagement.Core.Abstractions;
+using LibraryManagement.Dtos.BookDtos;
 using LibraryManagement.Dtos.QueryObjectDto;
 using LibraryManagement.Mappings;
 using LibraryManagement.Persistence;
@@ -12,17 +13,20 @@ namespace LibraryManagement.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private readonly LibraryDbContext _context;
+        private readonly IBookRepository _bookRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public BooksController(LibraryDbContext context)
+        public BooksController(IBookRepository bookRepository,
+         IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _bookRepository = bookRepository;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<BookDto>> GetBook([FromRoute] int id)
         {
-            var book = await _context.Books.FindAsync(id);
+            var book = await _bookRepository.GetByIdAsync(id);
 
             return book is null ?
                 NotFound() : Ok(book.ToBookDto());
@@ -31,9 +35,7 @@ namespace LibraryManagement.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BookDto>>> GetBooks([FromQuery] BookQueryObjectDto bookQueryObjDto)
         {
-            var query = _context.Books
-                .Include(b => b.Author)
-                .AsQueryable();
+            var query = _bookRepository.GetAll();
 
             var bookQueryObj = bookQueryObjDto.ToBookQueryObjectModel();
 
@@ -53,7 +55,7 @@ namespace LibraryManagement.Controllers
             }
 
             // paging
-            if ((bookQueryObj.PageNumber > 0  && bookQueryObj.PageSize > 0))
+            if (bookQueryObj.PageNumber > 0 && bookQueryObj.PageSize > 0)
                 query = query
                     .Skip((bookQueryObj.PageNumber - 1) * bookQueryObj.PageSize)
                     .Take(bookQueryObj.PageSize);
@@ -70,8 +72,8 @@ namespace LibraryManagement.Controllers
         {
             var book = createBookDto.ToBookModel();
 
-            await _context.Books.AddAsync(book);
-            await _context.SaveChangesAsync();
+            await _bookRepository.AddAsync(book);
+            await _unitOfWork.CompeteAsync();
 
             return Ok(book.ToBookDto());
         }
@@ -79,13 +81,13 @@ namespace LibraryManagement.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult> UpdateBook([FromRoute] int id, [FromBody] UpdateBookDto updateBookDto)
         {
-            var existingBook = await _context.Books.FindAsync(id);
+            var existingBook = await _bookRepository.GetByIdAsync(id);
 
             if (existingBook is null)
                 return NotFound("Attempt to update unexisting book");
 
             existingBook.MapUpdateBook(updateBookDto);
-            await _context.SaveChangesAsync();
+            await _unitOfWork.CompeteAsync();
 
             return NoContent();
         }
@@ -93,13 +95,13 @@ namespace LibraryManagement.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteBook([FromRoute] int id)
         {
-            var existingBook = await _context.Books.FindAsync(id);
+            var existingBook = await _bookRepository.GetByIdAsync(id);
 
             if (existingBook is null)
                 return NotFound();
 
-            _context.Books.Remove(existingBook);
-            await _context.SaveChangesAsync();
+            _bookRepository.Delete(existingBook);
+            await _unitOfWork.CompeteAsync();
 
             return NoContent();
         }
