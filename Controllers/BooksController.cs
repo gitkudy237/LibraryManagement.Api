@@ -1,6 +1,7 @@
 ﻿using LibraryManagement.Core.Abstractions;
 using LibraryManagement.Dtos.BookDtos;
 using LibraryManagement.Dtos.QueryObjectDto;
+using LibraryManagement.Extensions;
 using LibraryManagement.Mappings;
 using LibraryManagement.Persistence;
 using Microsoft.AspNetCore.Http;
@@ -39,12 +40,7 @@ namespace LibraryManagement.Controllers
 
             var bookQueryObj = bookQueryObjDto.ToBookQueryObjectModel();
 
-            // filtering
-            if (!string.IsNullOrWhiteSpace(bookQueryObj.Title))
-                query = query.Where(b => b.Title.Contains(bookQueryObj.Title));
-
-            if (!string.IsNullOrWhiteSpace(bookQueryObj.AuthorName))
-                query = query.Where(b => b.Author.Name.Contains(bookQueryObj.AuthorName));
+            query = query.ApplyFiltering(bookQueryObj);
 
             // sorting
             if (!string.IsNullOrWhiteSpace(bookQueryObj.SortBy))
