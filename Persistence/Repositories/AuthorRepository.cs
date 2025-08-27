@@ -17,7 +17,6 @@ public class AuthorRepository : IAuthorRepository
     public async Task AddAsync(Author author)
     {
         await _context.AddAsync(author);
-        await _context.SaveChangesAsync();
     }
 
     public async Task<Author?> GetByIdAsync(int id, bool includeRelated = false)
@@ -35,9 +34,8 @@ public class AuthorRepository : IAuthorRepository
         return await _context.Authors.ToListAsync();
     }
 
-    public async Task DeletAsync(Author author)
+    public void Delete(Author author)
     {
         _context.Authors.Remove(author);
-        await _context.SaveChangesAsync();
     }
 }

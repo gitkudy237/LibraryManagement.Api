@@ -14,11 +14,13 @@ public class AuthorsController : ControllerBase
 {
     private readonly LibraryDbContext _context;
     private readonly IAuthorRepository _authorsRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public AuthorsController(LibraryDbContext context, IAuthorRepository authorsRepository)
+    public AuthorsController(LibraryDbContext context, IAuthorRepository authorsRepository, IUnitOfWork unitOfWork)
     {
         _context = context;
         _authorsRepository = authorsRepository;
+        _unitOfWork = unitOfWork;
     }
 
     [HttpGet("{id:int}")]
@@ -44,7 +46,7 @@ public class AuthorsController : ControllerBase
     {
         var author = createAuthorDto.ToAuthorModel();
         await _authorsRepository.AddAsync(author);
-        await _context.SaveChangesAsync();
+        await _unitOfWork.CompeteAsync();
 
         return Ok(author.ToAuthorDto());
     }
@@ -58,7 +60,7 @@ public class AuthorsController : ControllerBase
             return NotFound("Attempt to update unexisting author");
 
         existingAuthor.MapUpdateAuthor(updateAuthorDto);
-        await _context.SaveChangesAsync();
+        await _unitOfWork.CompeteAsync();
 
         return NoContent();
     }
@@ -74,8 +76,8 @@ public class AuthorsController : ControllerBase
         if (existingAuthor.Books.Count > 0)
             return BadRequest("Cannot delete author with one or more books");
 
-        await _authorsRepository.DeletAsync(existingAuthor);
-        await _context.SaveChangesAsync();
+        _authorsRepository.Delete(existingAuthor);
+        await _unitOfWork.CompeteAsync();
 
         return NoContent();
     }
