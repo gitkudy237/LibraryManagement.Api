@@ -19,9 +19,17 @@ public static class BorrowerMappings
     {
         return new BorrowerDto
         {
+            Id = borrowerModel.Id,
             Name = borrowerModel.Name,
             Email = borrowerModel.Email,
             Phone = borrowerModel.Phone
         };
+    }
+
+    public static void MapUpdateBorrower(this Borrower borrowerModel, UpdateBorrowerDto UpdateBorrowerDto)
+    {
+        borrowerModel.Name = UpdateBorrowerDto.Name;
+        borrowerModel.Email = UpdateBorrowerDto.Email;
+        borrowerModel.Phone = UpdateBorrowerDto.Phone;
     }
 }

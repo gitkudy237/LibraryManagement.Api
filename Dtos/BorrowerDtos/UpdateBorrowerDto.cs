@@ -2,7 +2,7 @@
 
 namespace LibraryManagement.Dtos.BorrowerDtos;
 
-public class CreateBorrowerDto
+public class UpdateBorrowerDto
 {
     [Required]
     [StringLength(55)]
@@ -14,5 +14,5 @@ public class CreateBorrowerDto
 
     [Required]
     [StringLength(55)]
-    public required string Phone { get; set; } 
+    public required string Phone { get; set; }
 }
