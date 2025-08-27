@@ -1,5 +1,6 @@
 using LibraryManagement.Core.Abstractions;
 using LibraryManagement.Core.Models;
+using LibraryManagement.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagement.Persistence.Repositories
@@ -19,9 +20,18 @@ namespace LibraryManagement.Persistence.Repositories
         public void Delete(Book book)
             => _context.Books.Remove(book);
 
-        public IQueryable<Book> GetAll() => _context.Books
+        public IQueryable<Book> GetAll(BookQueryObject bookQueryObj)
+        {
+            var books = _context.Books
                 .Include(b => b.Author)
                 .AsQueryable();
+
+            books = books.ApplyFiltering(bookQueryObj);
+            books = books.ApplySorting(bookQueryObj);
+            books = books.ApplyPagination(bookQueryObj);
+
+            return books;
+        }
 
         public async Task<Book?> GetByIdAsync(int id)
              => await _context.Books.FindAsync(id);

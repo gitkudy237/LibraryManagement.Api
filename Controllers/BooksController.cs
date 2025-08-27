@@ -36,13 +36,9 @@ namespace LibraryManagement.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BookDto>>> GetBooks([FromQuery] BookQueryObjectDto bookQueryObjDto)
         {
-            var query = _bookRepository.GetAll();
 
             var bookQueryObj = bookQueryObjDto.ToBookQueryObjectModel();
-
-            query = query.ApplyFiltering(bookQueryObj);
-            query = query.ApplySorting(bookQueryObj);
-            query = query.ApplyPagination(bookQueryObj);
+            var query = _bookRepository.GetAll(bookQueryObj);
 
             var queryResult = await query.ToListAsync();
             var result = queryResult.Select(b => b.ToBookDto());
