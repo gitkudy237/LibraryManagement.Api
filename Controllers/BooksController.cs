@@ -1,7 +1,6 @@
 ﻿using LibraryManagement.Dtos.BookDtos;
 using LibraryManagement.Dtos.QueryObjectDto;
 using LibraryManagement.Mappings;
-using LibraryManagement.Models;
 using LibraryManagement.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

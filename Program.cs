@@ -1,4 +1,6 @@
+using LibraryManagement.Core.Abstractions;
 using LibraryManagement.Persistence;
+using LibraryManagement.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +16,7 @@ builder.Services.AddDbContext<LibraryDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
 });
 
-
+builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 
 var app = builder.Build();
 

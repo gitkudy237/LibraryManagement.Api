@@ -1,6 +1,5 @@
 ﻿using LibraryManagement.Dtos.BorrowerDtos;
 using LibraryManagement.Mappings;
-using LibraryManagement.Models;
 using LibraryManagement.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
