@@ -1,4 +1,5 @@
-﻿using LibraryManagement.Dtos.BorrowerDtos;
+﻿using LibraryManagement.Core.Abstractions;
+using LibraryManagement.Dtos.BorrowerDtos;
 using LibraryManagement.Mappings;
 using LibraryManagement.Persistence;
 using Microsoft.AspNetCore.Http;
@@ -12,10 +13,15 @@ namespace LibraryManagement.Controllers
     public class BorrowersController : ControllerBase
     {
         private readonly LibraryDbContext _context;
+        private readonly IBorrowerRepository _borrowerRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public BorrowersController(LibraryDbContext context)
+        public BorrowersController(LibraryDbContext context, IBorrowerRepository borrowerRepository,
+         IUnitOfWork unitOfWork)
         {
             _context = context;
+            _borrowerRepository = borrowerRepository;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpPost]
@@ -23,8 +29,8 @@ namespace LibraryManagement.Controllers
         {
             var borrower = createBorrowerDto.ToBorrowerModel();
 
-            await _context.Borrowers.AddAsync(borrower);
-            await _context.SaveChangesAsync();
+            await _borrowerRepository.AddAsync(borrower);
+            await _unitOfWork.CompeteAsync();
 
             return Ok(borrower.ToBorrowerDto());
         }
@@ -32,7 +38,7 @@ namespace LibraryManagement.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<BorrowerDto>> GetBorrower([FromRoute] int id)
         {
-            var borrower = await _context.Borrowers.FindAsync(id);
+            var borrower = await _borrowerRepository.GetByIdAsync(id);
 
             return borrower is null ?
                 NotFound() : Ok(borrower.ToBorrowerDto());
@@ -41,7 +47,7 @@ namespace LibraryManagement.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BorrowerDto>>> GetBorrowers()
         {
-            var borrowers = await _context.Borrowers.ToListAsync();
+            var borrowers = await _borrowerRepository.GetAllAsync();
             var result = borrowers.Select(b => b.ToBorrowerDto());
 
             return Ok(result);
@@ -50,13 +56,13 @@ namespace LibraryManagement.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult> UpdateBorrower([FromRoute] int id, [FromBody] UpdateBorrowerDto updateBorrowerDto)
         {
-            var existingBorrower = await _context.Borrowers.FindAsync(id);
+            var existingBorrower = await _borrowerRepository.GetByIdAsync(id);
 
             if (existingBorrower is null)
                 return NotFound();
 
             existingBorrower.MapUpdateBorrower(updateBorrowerDto);
-            await _context.SaveChangesAsync();
+            await _unitOfWork.CompeteAsync();
 
             return NoContent();
         }
@@ -64,13 +70,13 @@ namespace LibraryManagement.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteBorrower([FromRoute] int id)
         {
-            var existingBorrower = await _context.Borrowers.FindAsync(id);
+            var existingBorrower = await _borrowerRepository.GetByIdAsync(id);
 
             if (existingBorrower is null)
                 return NotFound();
 
-            _context.Borrowers.Remove(existingBorrower);
-            await _context.SaveChangesAsync();
+            _borrowerRepository.Delete(existingBorrower);
+            await _unitOfWork.CompeteAsync();
 
             return NoContent();
         }
