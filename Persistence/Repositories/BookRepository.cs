@@ -20,8 +20,9 @@ namespace LibraryManagement.Persistence.Repositories
         public void Delete(Book book)
             => _context.Books.Remove(book);
 
-        public IQueryable<Book> GetAll(BookQueryObject bookQueryObj)
+        public async Task<BookQueryResult> GetAll(BookQueryObject bookQueryObj)
         {
+            var queryResult = new BookQueryResult();
             var books = _context.Books
                 .Include(b => b.Author)
                 .AsQueryable();
@@ -30,7 +31,9 @@ namespace LibraryManagement.Persistence.Repositories
             books = books.ApplySorting(bookQueryObj);
             books = books.ApplyPagination(bookQueryObj);
 
-            return books;
+            queryResult.Items = await books.ToListAsync();
+
+            return queryResult;
         }
 
         public async Task<Book?> GetByIdAsync(int id)

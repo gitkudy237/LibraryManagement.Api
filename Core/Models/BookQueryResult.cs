@@ -1,3 +1,4 @@
+
 namespace LibraryManagement.Core.Models
 {
     public class BookQueryResult

@@ -38,10 +38,9 @@ namespace LibraryManagement.Controllers
         {
 
             var bookQueryObj = bookQueryObjDto.ToBookQueryObjectModel();
-            var query = _bookRepository.GetAll(bookQueryObj);
+            var queryResult = await _bookRepository.GetAll(bookQueryObj);
 
-            var queryResult = await query.ToListAsync();
-            var result = queryResult.Select(b => b.ToBookDto());
+            var result = queryResult.Items.Select(qr => qr.ToBookDto());
 
             return Ok(result);
         }
