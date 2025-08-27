@@ -42,13 +42,7 @@ namespace LibraryManagement.Controllers
 
             query = query.ApplyFiltering(bookQueryObj);
 
-            // sorting
-            if (!string.IsNullOrWhiteSpace(bookQueryObj.SortBy))
-            {
-                if (bookQueryObj.SortBy.Equals("Title", StringComparison.CurrentCultureIgnoreCase))
-                    query = bookQueryObj.IsSortAscending ?
-                        query.OrderBy(b => b.Title) : query.OrderByDescending(b => b.Title);
-            }
+            query = query.ApplySorting(bookQueryObj);
 
             // paging
             if (bookQueryObj.PageNumber > 0 && bookQueryObj.PageSize > 0)
