@@ -1,5 +1,5 @@
-﻿using LibraryManagement.Dtos.AuthorDtos;
-using LibraryManagement.Models;
+﻿using LibraryManagement.Core.Models;
+using LibraryManagement.Dtos.AuthorDtos;
 
 namespace LibraryManagement.Mappings;
 

@@ -1,5 +1,5 @@
-﻿using LibraryManagement.Dtos.BorrowerDtos;
-using LibraryManagement.Models;
+﻿using LibraryManagement.Core.Models;
+using LibraryManagement.Dtos.BorrowerDtos;
 
 namespace LibraryManagement.Mappings;
 

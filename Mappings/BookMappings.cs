@@ -1,5 +1,5 @@
-﻿using LibraryManagement.Dtos.BookDtos;
-using LibraryManagement.Models;
+﻿using LibraryManagement.Core.Models;
+using LibraryManagement.Dtos.BookDtos;
 
 namespace LibraryManagement.Mappings;
 

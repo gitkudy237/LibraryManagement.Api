@@ -1,5 +1,5 @@
-﻿using LibraryManagement.Dtos.QueryObjectDto;
-using LibraryManagement.Models;
+﻿using LibraryManagement.Core.Models;
+using LibraryManagement.Dtos.QueryObjectDto;
 
 namespace LibraryManagement.Mappings;
 

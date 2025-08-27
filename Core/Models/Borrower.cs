@@ -1,4 +1,4 @@
-﻿namespace LibraryManagement.Models;
+﻿namespace LibraryManagement.Core.Models;
 
 public class Borrower
 {

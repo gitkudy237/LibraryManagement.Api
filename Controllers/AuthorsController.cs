@@ -1,6 +1,6 @@
-﻿using LibraryManagement.Dtos.AuthorDtos;
+﻿using LibraryManagement.Core.Models;
+using LibraryManagement.Dtos.AuthorDtos;
 using LibraryManagement.Mappings;
-using LibraryManagement.Models;
 using LibraryManagement.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

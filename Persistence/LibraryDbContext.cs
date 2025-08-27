@@ -1,4 +1,4 @@
-﻿using LibraryManagement.Models;
+﻿using LibraryManagement.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagement.Persistence;
