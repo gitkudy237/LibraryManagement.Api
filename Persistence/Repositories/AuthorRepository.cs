@@ -29,7 +29,7 @@ public class AuthorRepository : IAuthorRepository
             .FirstOrDefaultAsync(a => a.Id == id);
     }
 
-    public async Task<List<Author>> GetAllAsync()
+    public async Task<IEnumerable<Author>> GetAllAsync()
     {
         return await _context.Authors.ToListAsync();
     }

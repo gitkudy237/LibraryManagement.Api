@@ -33,7 +33,7 @@ public class AuthorsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<AuthorDto>>> GetAuthors()
+    public async Task<ActionResult<IEnumerable<AuthorDto>>> GetAuthors()
     {
         var authors = await _authorsRepository.GetAllAsync();
         var result = authors.Select(auth => auth.ToAuthorDto());

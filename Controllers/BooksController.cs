@@ -29,7 +29,7 @@ namespace LibraryManagement.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<BookDto>>> GetBooks([FromQuery] BookQueryObjectDto bookQueryObjDto)
+        public async Task<ActionResult<IEnumerable<BookDto>>> GetBooks([FromQuery] BookQueryObjectDto bookQueryObjDto)
         {
             var query = _context.Books
                 .Include(b => b.Author)

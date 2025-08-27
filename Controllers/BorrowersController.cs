@@ -39,7 +39,7 @@ namespace LibraryManagement.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<BorrowerDto>>> GetBorrowers()
+        public async Task<ActionResult<IEnumerable<BorrowerDto>>> GetBorrowers()
         {
             var borrowers = await _context.Borrowers.ToListAsync();
             var result = borrowers.Select(b => b.ToBorrowerDto());
