@@ -5,7 +5,7 @@ namespace LibraryManagement.Core.Abstractions
     public interface IBookRepository
     {
         Task AddAsync(Book book);
-        Task<Book?> GetByIdAsync(int id);
+        Task<Book?> GetByIdAsync(int id, bool includeRelated = false);
         Task<BookQueryResult> GetAll(BookQueryObject bookQueryObj);
         void Delete(Book book);
     }

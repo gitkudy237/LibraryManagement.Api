@@ -12,14 +12,12 @@ namespace LibraryManagement.Controllers
     [ApiController]
     public class BorrowersController : ControllerBase
     {
-        private readonly LibraryDbContext _context;
         private readonly IBorrowerRepository _borrowerRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public BorrowersController(LibraryDbContext context, IBorrowerRepository borrowerRepository,
+        public BorrowersController(IBorrowerRepository borrowerRepository,
          IUnitOfWork unitOfWork)
         {
-            _context = context;
             _borrowerRepository = borrowerRepository;
             _unitOfWork = unitOfWork;
         }

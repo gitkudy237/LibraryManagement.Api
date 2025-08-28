@@ -36,7 +36,14 @@ namespace LibraryManagement.Persistence.Repositories
             return queryResult;
         }
 
-        public async Task<Book?> GetByIdAsync(int id)
-             => await _context.Books.FindAsync(id);
+        public async Task<Book?> GetByIdAsync(int id, bool includeRelated = false)
+        {
+            if (!includeRelated)
+                return await _context.Books.FindAsync(id);
+
+            return await _context.Books
+                .Include(b => b.Author)
+                .FirstOrDefaultAsync(b => b.Id == id);
+        }
     }
 }
