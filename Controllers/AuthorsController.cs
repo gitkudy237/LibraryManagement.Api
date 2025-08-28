@@ -12,13 +12,11 @@ namespace LibraryManagement.Controllers;
 [Route("api/[Controller]")]
 public class AuthorsController : ControllerBase
 {
-    private readonly LibraryDbContext _context;
     private readonly IAuthorRepository _authorsRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public AuthorsController(LibraryDbContext context, IAuthorRepository authorsRepository, IUnitOfWork unitOfWork)
+    public AuthorsController(IAuthorRepository authorsRepository, IUnitOfWork unitOfWork)
     {
-        _context = context;
         _authorsRepository = authorsRepository;
         _unitOfWork = unitOfWork;
     }
