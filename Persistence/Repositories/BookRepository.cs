@@ -32,6 +32,7 @@ namespace LibraryManagement.Persistence.Repositories
             books = books.ApplyPagination(bookQueryObj);
 
             queryResult.Items = await books.ToListAsync();
+            queryResult.TotalItems = await books.CountAsync();
 
             return queryResult;
         }

@@ -1,6 +1,7 @@
 ﻿using LibraryManagement.Core.Abstractions;
 using LibraryManagement.Dtos.BookDtos;
 using LibraryManagement.Dtos.QueryObjectDto;
+using LibraryManagement.Dtos.QueryResultDtos;
 using LibraryManagement.Extensions;
 using LibraryManagement.Mappings;
 using LibraryManagement.Persistence;
@@ -34,13 +35,13 @@ namespace LibraryManagement.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BookDto>>> GetBooks([FromQuery] BookQueryObjectDto bookQueryObjDto)
+        public async Task<ActionResult<BookQueryResultDto>> GetBooks([FromQuery] BookQueryObjectDto bookQueryObjDto)
         {
 
             var bookQueryObj = bookQueryObjDto.ToBookQueryObjectModel();
             var queryResult = await _bookRepository.GetAll(bookQueryObj);
 
-            var result = queryResult.Items.Select(qr => qr.ToBookDto());
+            var result = queryResult.ToBookQueryResultDto();
 
             return Ok(result);
         }
