@@ -11,4 +11,5 @@ public class Book
 
 
     public Author Author { get; set; } = null!;
+    public ICollection<Borrowing> Borrowings { get; set; } = [];
 }
