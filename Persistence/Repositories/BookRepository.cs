@@ -29,10 +29,12 @@ namespace LibraryManagement.Persistence.Repositories
 
             books = books.ApplyFiltering(bookQueryObj);
             books = books.ApplySorting(bookQueryObj);
+
+            queryResult.TotalItems = await books.CountAsync();
+
             books = books.ApplyPagination(bookQueryObj);
 
             queryResult.Items = await books.ToListAsync();
-            queryResult.TotalItems = await books.CountAsync();
 
             return queryResult;
         }

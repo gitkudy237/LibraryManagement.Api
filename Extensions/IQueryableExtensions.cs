@@ -29,10 +29,15 @@ namespace LibraryManagement.Extensions
 
         public static IQueryable<Book> ApplyPagination(this IQueryable<Book> query, BookQueryObject bookQueryObj)
         {
-            if (bookQueryObj.PageNumber > 0 && bookQueryObj.PageSize > 0)
-                query = query
-                    .Skip((bookQueryObj.PageNumber - 1) * bookQueryObj.PageSize)
-                    .Take(bookQueryObj.PageSize);
+            // just giving defaults in case we have invalid values
+            if (bookQueryObj.PageNumber <= 0)
+                bookQueryObj.PageNumber = 1;
+            if (bookQueryObj.PageSize <= 0)
+                bookQueryObj.PageSize = 10;
+
+            query = query
+                .Skip((bookQueryObj.PageNumber - 1) * bookQueryObj.PageSize)
+                .Take(bookQueryObj.PageSize);
 
             return query;
         }
