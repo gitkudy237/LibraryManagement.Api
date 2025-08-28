@@ -1,16 +1,11 @@
-namespace LibraryManagement.Core.Models
+namespace LibraryManagement.Dtos.BorrowingsDto
 {
-    public class Borrowing
+    public class BorrowingDto
     {
         public int Id { get; set; }
         public int BookId { get; set; }
         public int BorrowerId { get; set; }
         public DateOnly BorrowingDate { get; set; }
         public DateOnly DueDate { get; set; }
-
-        //  TODO: add ReturnDate property
-
-        public Book Book { get; set; } = null!;
-        public Borrower Borrower { get; set; } = null!;
     }
 }
