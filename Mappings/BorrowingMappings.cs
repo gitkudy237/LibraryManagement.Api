@@ -17,7 +17,7 @@ namespace LibraryManagement.Mappings
             };
         }
 
-        public static Borrowing ToBorrowingModel(this BorrowingDto borrowingDto)
+        public static Borrowing ToBorrowingModel(this CreateBorrowingDto borrowingDto)
         {
             return new Borrowing
             {
