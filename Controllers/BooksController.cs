@@ -53,7 +53,7 @@ namespace LibraryManagement.Controllers
             await _bookRepository.AddAsync(book);
             await _unitOfWork.CommitAsync();
 
-            return Ok(book.ToBookDto());
+            return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book.ToBookDto());
         }
 
         [HttpPut("{id:int}")]

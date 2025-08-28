@@ -46,7 +46,7 @@ public class AuthorsController : ControllerBase
         await _authorsRepository.AddAsync(author);
         await _unitOfWork.CommitAsync();
 
-        return Ok(author.ToAuthorDto());
+        return CreatedAtAction(nameof(GetAuthor), new { id = author.Id }, author.ToAuthorDto());
     }
 
     [HttpPut("{id:int}")]

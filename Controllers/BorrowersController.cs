@@ -32,7 +32,7 @@ namespace LibraryManagement.Controllers
             await _borrowerRepository.AddAsync(borrower);
             await _unitOfWork.CommitAsync();
 
-            return Ok(borrower.ToBorrowerDto());
+            return CreatedAtAction(nameof(GetBorrower), new { id = borrower.Id }, borrower.ToBorrowerDto());
         }
 
         [HttpGet("{id:int}")]
