@@ -78,8 +78,8 @@ namespace LibraryManagement.Controllers
 
             if (existingBook is null)
                 return NotFound();
-            if (existingBook.Borrowings.Any(b => b.ReturnDate is null))
-                return BadRequest("Book has active borrowings");
+            if (existingBook.Borrowings.Any(b => b.ReturnDate == null))
+                return BadRequest("Cannot delete actively borrowed book");
 
             _bookRepository.Delete(existingBook);
             await _unitOfWork.CommitAsync();

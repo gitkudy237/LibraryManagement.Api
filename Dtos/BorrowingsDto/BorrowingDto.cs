@@ -7,5 +7,6 @@ namespace LibraryManagement.Dtos.BorrowingsDto
         public int BorrowerId { get; set; }
         public DateOnly BorrowingDate { get; set; }
         public DateOnly DueDate { get; set; }
+        public DateOnly? ReturnDate { get; set; }
     }
 }

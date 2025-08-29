@@ -13,7 +13,8 @@ namespace LibraryManagement.Mappings
                 BookId = borrowingModel.BookId,
                 BorrowerId = borrowingModel.BorrowerId,
                 BorrowingDate = borrowingModel.BorrowingDate,
-                DueDate = borrowingModel.DueDate
+                DueDate = borrowingModel.DueDate,
+                ReturnDate = borrowingModel.ReturnDate
             };
         }
 
