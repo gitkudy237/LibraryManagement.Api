@@ -2,6 +2,10 @@ using LibraryManagement.Core.Abstractions;
 using LibraryManagement.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
+// TODO: Include borrowing status of single borrowing
+// TODO: Refactor borrowing status logic and make it reusable
+// TODO: Update borrowing dtos accordingly (add status field on dto)
+
 namespace LibraryManagement.Persistence.Repositories
 {
     public class BorrowingRepository : IBorrowingRepository
@@ -31,6 +35,13 @@ namespace LibraryManagement.Persistence.Repositories
         public async Task AddAsync(Borrowing borrowing)
         {
             await _context.Borrowings.AddAsync(borrowing);
+        }
+
+        public async Task<IEnumerable<Borrowing>> GetOverdue()
+        {
+            return await _context.Borrowings
+                .Where(b => b.ReturnDate > b.DueDate)
+                .ToListAsync();
         }
     }
 }

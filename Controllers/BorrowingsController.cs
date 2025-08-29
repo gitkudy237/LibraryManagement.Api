@@ -41,7 +41,16 @@ namespace LibraryManagement.Controllers
             var borrowing = await _borrowingRepository.GetByIdAsync(id, includeRelated: true);
 
             return borrowing is null ?
-                NotFound() : Ok(borrowing);
+                NotFound() : Ok(borrowing.ToBorrowingDto());
+        }
+
+        [HttpGet("overdue")]
+        public async Task<ActionResult<IEnumerable<BorrowingDto>>> GetOverdueBorrowings()
+        {
+            var overdueBorrowings = await _borrowingRepository.GetOverdue();
+            var result = overdueBorrowings.Select(ob => ob.ToBorrowingDto());
+
+            return Ok(result);
         }
 
         [HttpPost]

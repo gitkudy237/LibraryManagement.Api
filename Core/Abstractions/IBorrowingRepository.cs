@@ -6,6 +6,7 @@ namespace LibraryManagement.Core.Abstractions
     {
         Task<Borrowing?> GetByIdAsync(int id, bool includeRelated = false);
         Task<IEnumerable<Borrowing>> GetAllAsync();
+        Task<IEnumerable<Borrowing>> GetOverdue();
         Task AddAsync(Borrowing borrowing);
     }
 }
