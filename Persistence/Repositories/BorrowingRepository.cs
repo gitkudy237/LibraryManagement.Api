@@ -27,5 +27,10 @@ namespace LibraryManagement.Persistence.Repositories
         {
             return await _context.Borrowings.ToListAsync();
         }
+
+        public async Task AddAsync(Borrowing borrowing)
+        {
+            await _context.Borrowings.AddAsync(borrowing);
+        }
     }
 }

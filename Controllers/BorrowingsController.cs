@@ -11,13 +11,18 @@ namespace LibraryManagement.Controllers
     [Route("api/[controller]")]
     public class BorrowingsController : ControllerBase
     {
+        private readonly IBookRepository _bookRepository;
+        private readonly IBorrowerRepository _borrowerRepository;
         private readonly IBorrowingRepository _borrowingRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public BorrowingsController(IBorrowingRepository borrowingRepository, IUnitOfWork unitOfWork)
+        public BorrowingsController(IBorrowingRepository borrowingRepository, IUnitOfWork unitOfWork,
+         IBookRepository bookRepository, IBorrowerRepository borrowerRepository)
         {
+            _bookRepository = bookRepository;
             _borrowingRepository = borrowingRepository;
             _unitOfWork = unitOfWork;
+            _borrowerRepository = borrowerRepository;
         }
 
 
@@ -37,6 +42,33 @@ namespace LibraryManagement.Controllers
 
             return borrowing is null ?
                 NotFound() : Ok(borrowing);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddBorrowing([FromBody] CreateBorrowingDto createBorrowingDto)
+        {
+            if (createBorrowingDto.DueDate < createBorrowingDto.BorrowingDate)
+                return BadRequest("Due date is sooner than borrowing date");
+
+            var borrowingRequest = createBorrowingDto.ToBorrowingModel();
+
+            var borrower = await _borrowerRepository.GetByIdAsync(borrowingRequest.BorrowerId);
+            if (borrower is null)
+                return BadRequest("Borrower not found");
+
+            var book = await _bookRepository.GetByIdAsync(borrowingRequest.BookId);
+            if (book is null)
+                return BadRequest("Book not found");
+            if (book.AvailableCopies < 1)
+                return BadRequest("Book is not availble at the moment");
+
+            book.AvailableCopies--;
+
+            await _borrowingRepository.AddAsync(borrowingRequest);
+            await _unitOfWork.CommitAsync();
+
+            return Ok(borrowingRequest.ToBorrowingDto());
+
         }
     }
 }
