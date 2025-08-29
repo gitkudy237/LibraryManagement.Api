@@ -46,6 +46,7 @@ namespace LibraryManagement.Persistence.Repositories
 
             return await _context.Books
                 .Include(b => b.Author)
+                .Include(b => b.Borrowings)
                 .FirstOrDefaultAsync(b => b.Id == id);
         }
     }

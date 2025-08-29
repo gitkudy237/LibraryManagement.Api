@@ -74,10 +74,12 @@ namespace LibraryManagement.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteBook([FromRoute] int id)
         {
-            var existingBook = await _bookRepository.GetByIdAsync(id);
+            var existingBook = await _bookRepository.GetByIdAsync(id, includeRelated: true);
 
             if (existingBook is null)
                 return NotFound();
+            if (existingBook.Borrowings.Any(b => b.ReturnDate is null))
+                return BadRequest("Book has active borrowings");
 
             _bookRepository.Delete(existingBook);
             await _unitOfWork.CommitAsync();
