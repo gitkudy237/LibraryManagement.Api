@@ -40,7 +40,7 @@ namespace LibraryManagement.Persistence.Repositories
         public async Task<IEnumerable<Borrowing>> GetOverdue()
         {
             return await _context.Borrowings
-                .Where(b => b.ReturnDate > b.DueDate)
+                .Where(b => b.DueDate < DateOnly.FromDateTime(DateTime.Now))
                 .ToListAsync();
         }
     }
