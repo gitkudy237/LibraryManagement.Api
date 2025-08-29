@@ -126,6 +126,9 @@ namespace LibraryManagement.Migrations
                     b.Property<DateOnly>("DueDate")
                         .HasColumnType("date");
 
+                    b.Property<DateOnly?>("ReturnDate")
+                        .HasColumnType("date");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");

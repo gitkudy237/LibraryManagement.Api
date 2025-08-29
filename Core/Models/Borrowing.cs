@@ -7,8 +7,8 @@ namespace LibraryManagement.Core.Models
         public int BorrowerId { get; set; }
         public DateOnly BorrowingDate { get; set; }
         public DateOnly DueDate { get; set; }
+        public DateOnly? ReturnDate { get; set; }
 
-        //  TODO: add ReturnDate property
 
         public Book Book { get; set; } = null!;
         public Borrower Borrower { get; set; } = null!;

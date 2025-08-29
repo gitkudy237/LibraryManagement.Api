@@ -45,7 +45,7 @@ namespace LibraryManagement.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddBorrowing([FromBody] CreateBorrowingDto createBorrowingDto)
+        public async Task<ActionResult> BorrowBook([FromBody] CreateBorrowingDto createBorrowingDto)
         {
             if (createBorrowingDto.DueDate < createBorrowingDto.BorrowingDate)
                 return BadRequest("Due date is sooner than borrowing date");
@@ -67,7 +67,29 @@ namespace LibraryManagement.Controllers
             await _borrowingRepository.AddAsync(borrowingRequest);
             await _unitOfWork.CommitAsync();
 
-            return Ok(borrowingRequest.ToBorrowingDto());
+            return CreatedAtAction(
+                nameof(GetBorrowing), new { id = borrowingRequest.Id },
+                borrowingRequest.ToBorrowingDto());
+
+        }
+
+        [HttpPut("{borrowingId:int}")]
+        public async Task<ActionResult> ReturnBook([FromRoute] int borrowingId)
+        {
+            var activeBorrowing = await _borrowingRepository
+                .GetByIdAsync(borrowingId, includeRelated: true);
+
+            if (activeBorrowing is null)
+                return BadRequest("Borrowing not found");
+            if (activeBorrowing.ReturnDate is not null)
+                return BadRequest("Book already returned");
+
+            activeBorrowing.ReturnDate = DateOnly.FromDateTime(DateTime.Now);
+            activeBorrowing.Book.AvailableCopies++;
+
+            await _unitOfWork.CommitAsync();
+
+            return NoContent();
 
         }
     }
