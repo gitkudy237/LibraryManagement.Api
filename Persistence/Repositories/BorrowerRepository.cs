@@ -28,9 +28,14 @@ namespace LibraryManagement.Persistence.Repositories
             return await _context.Borrowers.ToListAsync();
         }
 
-        public async Task<Borrower?> GetByIdAsync(int id)
+        public async Task<Borrower?> GetByIdAsync(int id, bool includeRelated = false)
         {
-            return await _context.Borrowers.FindAsync(id);
+            if (!includeRelated)
+                return await _context.Borrowers.FindAsync(id);
+
+            return await _context.Borrowers
+                .Include(b => b.Borrowings)
+                .FirstOrDefaultAsync(b => b.Id == id);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace LibraryManagement.Core.Abstractions
     public interface IBorrowerRepository
     {
         Task AddAsync(Borrower borrower);
-        Task<Borrower?> GetByIdAsync(int id);
+        Task<Borrower?> GetByIdAsync(int id, bool includeRelated = false);
         Task<IEnumerable<Borrower>> GetAllAsync();
         void Delete(Borrower borrower);
     }
