@@ -14,7 +14,21 @@ namespace LibraryManagement.Mappings
                 BorrowerId = borrowingModel.BorrowerId,
                 BorrowingDate = borrowingModel.BorrowingDate,
                 DueDate = borrowingModel.DueDate,
-                ReturnDate = borrowingModel.ReturnDate
+                ReturnDate = borrowingModel.ReturnDate,
+            };
+        }
+
+        public static BorrowingStatusDto ToBorrowingWithStatusDto(this Borrowing borrowingModel)
+        {
+            return new BorrowingStatusDto
+            {
+                Id = borrowingModel.Id,
+                BookId = borrowingModel.BookId,
+                BorrowerId = borrowingModel.BorrowerId,
+                BorrowingDate = borrowingModel.BorrowingDate,
+                DueDate = borrowingModel.DueDate,
+                ReturnDate = borrowingModel.ReturnDate,
+                Status = GetBorrowingStatus(borrowingModel)
             };
         }
 
@@ -27,6 +41,14 @@ namespace LibraryManagement.Mappings
                 BorrowingDate = borrowingDto.BorrowingDate,
                 DueDate = borrowingDto.DueDate
             };
+        }
+
+        private static string GetBorrowingStatus(Borrowing borrowing)
+        {
+            if (borrowing.ReturnDate.HasValue) return "Returned";
+            if (borrowing.DueDate < DateOnly.FromDateTime(DateTime.Now) &&
+                !borrowing.ReturnDate.HasValue) return "Overdue";
+            return "On Loan";
         }
     }
 }

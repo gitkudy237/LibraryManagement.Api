@@ -30,7 +30,7 @@ namespace LibraryManagement.Controllers
         public async Task<ActionResult<IEnumerable<BorrowingDto>>> GetAllBorrowings()
         {
             var borrowings = await _borrowingRepository.GetAllAsync();
-            var result = borrowings.Select(b => b.ToBorrowingDto());
+            var result = borrowings.Select(b => b.ToBorrowingWithStatusDto());
 
             return Ok(result);
         }
