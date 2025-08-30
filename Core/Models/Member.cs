@@ -1,6 +1,6 @@
 ﻿namespace LibraryManagement.Core.Models;
 
-public class Borrower
+public class Member
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;

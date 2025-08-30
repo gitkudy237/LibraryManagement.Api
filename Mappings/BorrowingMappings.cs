@@ -11,7 +11,7 @@ namespace LibraryManagement.Mappings
             {
                 Id = borrowingModel.Id,
                 BookId = borrowingModel.BookId,
-                BorrowerId = borrowingModel.BorrowerId,
+                MemberId = borrowingModel.MemberId,
                 BorrowingDate = borrowingModel.BorrowingDate,
                 DueDate = borrowingModel.DueDate,
                 ReturnDate = borrowingModel.ReturnDate,
@@ -24,7 +24,7 @@ namespace LibraryManagement.Mappings
             {
                 Id = borrowingModel.Id,
                 BookId = borrowingModel.BookId,
-                BorrowerId = borrowingModel.BorrowerId,
+                MemberId = borrowingModel.MemberId,
                 BorrowingDate = borrowingModel.BorrowingDate,
                 DueDate = borrowingModel.DueDate,
                 ReturnDate = borrowingModel.ReturnDate,
@@ -37,7 +37,7 @@ namespace LibraryManagement.Mappings
             return new Borrowing
             {
                 BookId = borrowingDto.BookId,
-                BorrowerId = borrowingDto.BorrowerId,
+                MemberId = borrowingDto.MemberId,
                 BorrowingDate = borrowingDto.BorrowingDate,
                 DueDate = borrowingDto.DueDate
             };

@@ -8,7 +8,7 @@ namespace LibraryManagement.Dtos.BorrowingsDto
         public int BookId { get; set; }
 
         [Required]
-        public int BorrowerId { get; set; }
+        public int MemberId { get; set; }
 
         [Required] // TODO: later remove this property since borrowing date shall be the current date
         public DateOnly BorrowingDate { get; set; }

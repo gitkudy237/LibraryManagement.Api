@@ -12,12 +12,12 @@ namespace LibraryManagement.Controllers
     public class BorrowingsController : ControllerBase
     {
         private readonly IBookRepository _bookRepository;
-        private readonly IBorrowerRepository _borrowerRepository;
+        private readonly IMemberRepository _borrowerRepository;
         private readonly IBorrowingRepository _borrowingRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public BorrowingsController(IBorrowingRepository borrowingRepository, IUnitOfWork unitOfWork,
-         IBookRepository bookRepository, IBorrowerRepository borrowerRepository)
+         IBookRepository bookRepository, IMemberRepository borrowerRepository)
         {
             _bookRepository = bookRepository;
             _borrowingRepository = borrowingRepository;

@@ -2,7 +2,7 @@
 
 namespace LibraryManagement.Dtos.BorrowerDtos;
 
-public class UpdateBorrowerDto
+public class UpdateMemberDto
 {
     [Required]
     [StringLength(55)]

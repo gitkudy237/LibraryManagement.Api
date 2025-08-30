@@ -24,7 +24,7 @@ namespace LibraryManagement.Persistence.Repositories
 
             return await _context.Borrowings
                 .Include(b => b.Book)
-                .Include(b => b.Borrower)
+                .Include(b => b.Member)
                 .FirstOrDefaultAsync(b => b.Id == id);
         }
         public async Task<IEnumerable<Borrowing>> GetAllAsync()
