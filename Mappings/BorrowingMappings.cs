@@ -28,7 +28,7 @@ namespace LibraryManagement.Mappings
                 BorrowingDate = borrowingModel.BorrowingDate,
                 DueDate = borrowingModel.DueDate,
                 ReturnDate = borrowingModel.ReturnDate,
-                Status = GetBorrowingStatus(borrowingModel)
+                Status = GetBorrowingStatus(borrowingModel).ToString()
             };
         }
 
@@ -43,12 +43,12 @@ namespace LibraryManagement.Mappings
             };
         }
 
-        private static string GetBorrowingStatus(Borrowing borrowing)
+        private static BorrowingStatus GetBorrowingStatus(Borrowing borrowing)
         {
-            if (borrowing.ReturnDate.HasValue) return "Returned";
+            if (borrowing.ReturnDate.HasValue) return BorrowingStatus.Returned;
             if (borrowing.DueDate < DateOnly.FromDateTime(DateTime.Now) &&
-                !borrowing.ReturnDate.HasValue) return "Overdue";
-            return "On Loan";
+                !borrowing.ReturnDate.HasValue) return BorrowingStatus.Overdue;
+            return BorrowingStatus.On_loan;
         }
     }
 }
