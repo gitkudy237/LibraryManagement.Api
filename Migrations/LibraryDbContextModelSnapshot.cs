@@ -81,7 +81,39 @@ namespace LibraryManagement.Migrations
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("LibraryManagement.Core.Models.Borrower", b =>
+            modelBuilder.Entity("LibraryManagement.Core.Models.Borrowing", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly>("BorrowingDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly>("DueDate")
+                        .HasColumnType("date");
+
+                    b.Property<int>("MemberId")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly?>("ReturnDate")
+                        .HasColumnType("date");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("MemberId");
+
+                    b.ToTable("Borrowings");
+                });
+
+            modelBuilder.Entity("LibraryManagement.Core.Models.Member", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -103,39 +135,7 @@ namespace LibraryManagement.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Borrowers");
-                });
-
-            modelBuilder.Entity("LibraryManagement.Core.Models.Borrowing", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BorrowerId")
-                        .HasColumnType("int");
-
-                    b.Property<DateOnly>("BorrowingDate")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly>("DueDate")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly?>("ReturnDate")
-                        .HasColumnType("date");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookId");
-
-                    b.HasIndex("BorrowerId");
-
-                    b.ToTable("Borrowings");
+                    b.ToTable("Members");
                 });
 
             modelBuilder.Entity("LibraryManagement.Core.Models.Book", b =>
@@ -157,15 +157,15 @@ namespace LibraryManagement.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LibraryManagement.Core.Models.Borrower", "Borrower")
+                    b.HasOne("LibraryManagement.Core.Models.Member", "Member")
                         .WithMany("Borrowings")
-                        .HasForeignKey("BorrowerId")
+                        .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Book");
 
-                    b.Navigation("Borrower");
+                    b.Navigation("Member");
                 });
 
             modelBuilder.Entity("LibraryManagement.Core.Models.Author", b =>
@@ -178,7 +178,7 @@ namespace LibraryManagement.Migrations
                     b.Navigation("Borrowings");
                 });
 
-            modelBuilder.Entity("LibraryManagement.Core.Models.Borrower", b =>
+            modelBuilder.Entity("LibraryManagement.Core.Models.Member", b =>
                 {
                     b.Navigation("Borrowings");
                 });

@@ -12,7 +12,7 @@ namespace LibraryManagement.Controllers
     public class BorrowingsController : ControllerBase
     {
         private readonly IBookRepository _bookRepository;
-        private readonly IMemberRepository _borrowerRepository;
+        private readonly IMemberRepository _memberRepository;
         private readonly IBorrowingRepository _borrowingRepository;
         private readonly IUnitOfWork _unitOfWork;
 
@@ -22,7 +22,7 @@ namespace LibraryManagement.Controllers
             _bookRepository = bookRepository;
             _borrowingRepository = borrowingRepository;
             _unitOfWork = unitOfWork;
-            _borrowerRepository = borrowerRepository;
+            _memberRepository = borrowerRepository;
         }
 
 
@@ -61,8 +61,8 @@ namespace LibraryManagement.Controllers
 
             var borrowingRequest = createBorrowingDto.ToBorrowingModel();
 
-            var borrower = await _borrowerRepository.GetByIdAsync(borrowingRequest.BorrowerId);
-            if (borrower is null)
+            var member = await _memberRepository.GetByIdAsync(borrowingRequest.MemberId);
+            if (member is null)
                 return BadRequest("Borrower not found");
 
             var book = await _bookRepository.GetByIdAsync(borrowingRequest.BookId);
