@@ -23,6 +23,7 @@ public static class QueryObjectMappings
         return new AuthorQueryObject
         {
             Name = authorQueryObjectDto.Name,
+            SortBy = authorQueryObjectDto.SortBy,
             IsSortAscending = authorQueryObjectDto.IsSortAscending,
             PageNumber = authorQueryObjectDto.PageNumber,
             PageSize = authorQueryObjectDto.PageSize

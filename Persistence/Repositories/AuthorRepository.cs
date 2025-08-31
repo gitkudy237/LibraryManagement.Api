@@ -38,8 +38,11 @@ public class AuthorRepository : IAuthorRepository
             .AsQueryable();
 
         authors = authors.ApplyFiltering(authorQueryObj);
+        authors = authors.ApplySorting(authorQueryObj);
 
         queryResult.TotalItems = await authors.CountAsync();
+        authors = authors.ApplyPagination(authorQueryObj);
+
         queryResult.Items = await authors.ToListAsync();
 
         return queryResult;
