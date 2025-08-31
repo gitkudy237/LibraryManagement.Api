@@ -1,5 +1,6 @@
 ﻿using LibraryManagement.Core.Abstractions;
 using LibraryManagement.Core.Models;
+using LibraryManagement.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagement.Persistence.Repositories;
@@ -29,9 +30,19 @@ public class AuthorRepository : IAuthorRepository
             .FirstOrDefaultAsync(a => a.Id == id);
     }
 
-    public async Task<IEnumerable<Author>> GetAllAsync()
+    public async Task<QueryResult<Author>> GetAllAsync(AuthorQueryObject authorQueryObj)
     {
-        return await _context.Authors.ToListAsync();
+        var queryResult = new QueryResult<Author>();
+        var authors = _context.Authors
+            .Include(a => a.Books)
+            .AsQueryable();
+
+        authors = authors.ApplyFiltering(authorQueryObj);
+
+        queryResult.TotalItems = await authors.CountAsync();
+        queryResult.Items = await authors.ToListAsync();
+
+        return queryResult;
     }
 
     public void Delete(Author author)

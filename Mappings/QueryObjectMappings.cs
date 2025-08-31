@@ -17,4 +17,15 @@ public static class QueryObjectMappings
             PageSize = bookQueryObjectDto.PageSize,
         };
     }
+
+    public static AuthorQueryObject ToAuthorQueryObjectModel(this AuthorQueryObjectDto authorQueryObjectDto)
+    {
+        return new AuthorQueryObject
+        {
+            Name = authorQueryObjectDto.Name,
+            IsSortAscending = authorQueryObjectDto.IsSortAscending,
+            PageNumber = authorQueryObjectDto.PageNumber,
+            PageSize = authorQueryObjectDto.PageSize
+        };
+    }
 }

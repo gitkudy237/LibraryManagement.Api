@@ -6,7 +6,7 @@ public interface IAuthorRepository
 {
     Task AddAsync(Author author);
     Task<Author?> GetByIdAsync(int id, bool includeRelated = false);
-    Task<IEnumerable<Author>> GetAllAsync();
+    Task<QueryResult<Author>> GetAllAsync(AuthorQueryObject authorQueryObj);
     void Delete(Author author);
-    
+
 }

@@ -1,6 +1,8 @@
 ﻿using LibraryManagement.Core.Abstractions;
 using LibraryManagement.Core.Models;
 using LibraryManagement.Dtos.AuthorDtos;
+using LibraryManagement.Dtos.QueryObjectDto;
+using LibraryManagement.Dtos.QueryResultDtos;
 using LibraryManagement.Mappings;
 using LibraryManagement.Persistence;
 using Microsoft.AspNetCore.Mvc;
@@ -29,10 +31,11 @@ public class AuthorsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<AuthorDto>>> GetAuthors()
+    public async Task<ActionResult<AuthorQueryResultDto>> GetAuthors([FromQuery] AuthorQueryObjectDto queryObjectDto)
     {
-        var authors = await _unitOfWork.Authors.GetAllAsync();
-        var result = authors.Select(auth => auth.ToAuthorDto());
+        var queryObject = queryObjectDto.ToAuthorQueryObjectModel();
+        var queryResult = await _unitOfWork.Authors.GetAllAsync(queryObject);
+        var result = queryResult.ToAuthorQueryResultDto();
 
         return Ok(result);
     }
