@@ -18,7 +18,7 @@ builder.Services.AddDbContext<LibraryDbContext>(options =>
 
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
-builder.Services.AddScoped<IMemberRepository, BorrowerRepository>();
+builder.Services.AddScoped<IMemberRepository, MembersRepository>();
 builder.Services.AddScoped<IBorrowingRepository, BorrowingRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 

@@ -12,13 +12,10 @@ namespace LibraryManagement.Controllers
     [ApiController]
     public class MembersController : ControllerBase
     {
-        private readonly IMemberRepository _memberRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public MembersController(IMemberRepository memberRepository,
-         IUnitOfWork unitOfWork)
+        public MembersController(IUnitOfWork unitOfWork)
         {
-            _memberRepository = memberRepository;
             _unitOfWork = unitOfWork;
         }
 
@@ -27,7 +24,7 @@ namespace LibraryManagement.Controllers
         {
             var member = CreateMemberDto.ToMemberModel();
 
-            await _memberRepository.AddAsync(member);
+            await _unitOfWork.Members.AddAsync(member);
             await _unitOfWork.CommitAsync();
 
             return CreatedAtAction(nameof(GetMember), new { id = member.Id }, member.ToMemberDto());
@@ -36,7 +33,7 @@ namespace LibraryManagement.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<MemberDto>> GetMember([FromRoute] int id)
         {
-            var member = await _memberRepository.GetByIdAsync(id);
+            var member = await _unitOfWork.Members.GetByIdAsync(id);
 
             return member is null ?
                 NotFound() : Ok(member.ToMemberDto());
@@ -45,7 +42,7 @@ namespace LibraryManagement.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetAllMembers()
         {
-            var members = await _memberRepository.GetAllAsync();
+            var members = await _unitOfWork.Members.GetAllAsync();
             var result = members.Select(b => b.ToMemberDto());
 
             return Ok(result);
@@ -54,7 +51,7 @@ namespace LibraryManagement.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult> UpdateMember([FromRoute] int id, [FromBody] UpdateMemberDto updateMemberDto)
         {
-            var existingMember = await _memberRepository.GetByIdAsync(id);
+            var existingMember = await _unitOfWork.Members.GetByIdAsync(id);
 
             if (existingMember is null)
                 return NotFound();
@@ -68,12 +65,12 @@ namespace LibraryManagement.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteMember([FromRoute] int id)
         {
-            var existingMember = await _memberRepository.GetByIdAsync(id);
+            var existingMember = await _unitOfWork.Members.GetByIdAsync(id);
 
             if (existingMember is null)
                 return NotFound();
 
-            _memberRepository.Delete(existingMember);
+            _unitOfWork.Members.Delete(existingMember);
             await _unitOfWork.CommitAsync();
 
             return NoContent();

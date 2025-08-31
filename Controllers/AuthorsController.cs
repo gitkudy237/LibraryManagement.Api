@@ -12,19 +12,17 @@ namespace LibraryManagement.Controllers;
 [Route("api/[Controller]")]
 public class AuthorsController : ControllerBase
 {
-    private readonly IAuthorRepository _authorsRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public AuthorsController(IAuthorRepository authorsRepository, IUnitOfWork unitOfWork)
+    public AuthorsController(IUnitOfWork unitOfWork)
     {
-        _authorsRepository = authorsRepository;
         _unitOfWork = unitOfWork;
     }
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<AuthorDto>> GetAuthor([FromRoute] int id)
     {
-        var author = await _authorsRepository.GetByIdAsync(id);
+        var author = await _unitOfWork.Authors.GetByIdAsync(id);
 
         return author is null ?
             NotFound() : Ok(author.ToAuthorDto());
@@ -33,7 +31,7 @@ public class AuthorsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<AuthorDto>>> GetAuthors()
     {
-        var authors = await _authorsRepository.GetAllAsync();
+        var authors = await _unitOfWork.Authors.GetAllAsync();
         var result = authors.Select(auth => auth.ToAuthorDto());
 
         return Ok(result);
@@ -43,7 +41,7 @@ public class AuthorsController : ControllerBase
     public async Task<ActionResult<Author>> CreateAuthor([FromBody] CreateAuthorDto createAuthorDto)
     {
         var author = createAuthorDto.ToAuthorModel();
-        await _authorsRepository.AddAsync(author);
+        await _unitOfWork.Authors.AddAsync(author);
         await _unitOfWork.CommitAsync();
 
         return CreatedAtAction(nameof(GetAuthor), new { id = author.Id }, author.ToAuthorDto());
@@ -52,7 +50,7 @@ public class AuthorsController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<ActionResult> UpdateAuthor([FromRoute] int id, [FromBody] UpdateAuthorDto updateAuthorDto)
     {
-        var existingAuthor = await _authorsRepository.GetByIdAsync(id);
+        var existingAuthor = await _unitOfWork.Authors.GetByIdAsync(id);
 
         if (existingAuthor is null)
             return NotFound("Attempt to update unexisting author");
@@ -66,7 +64,7 @@ public class AuthorsController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> DeleteAuthor([FromRoute] int id)
     {
-        var existingAuthor = await _authorsRepository.GetByIdAsync(id, includeRelated: true);
+        var existingAuthor = await _unitOfWork.Authors.GetByIdAsync(id, includeRelated: true);
 
         if (existingAuthor is null)
             return NotFound();
@@ -74,7 +72,7 @@ public class AuthorsController : ControllerBase
         if (existingAuthor.Books.Count > 0)
             return BadRequest("Cannot delete author with one or more books");
 
-        _authorsRepository.Delete(existingAuthor);
+        _unitOfWork.Authors.Delete(existingAuthor);
         await _unitOfWork.CommitAsync();
 
         return NoContent();

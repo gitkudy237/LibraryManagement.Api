@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagement.Persistence.Repositories
 {
-    public class BorrowerRepository : IMemberRepository
+    public class MembersRepository : IMemberRepository
     {
         private readonly LibraryDbContext _context;
 
-        public BorrowerRepository(LibraryDbContext context)
+        public MembersRepository(LibraryDbContext context)
         {
             _context = context;
         }

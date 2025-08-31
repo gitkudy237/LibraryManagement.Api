@@ -2,5 +2,9 @@
 
 public interface IUnitOfWork
 {
-    Task CommitAsync();
+    public IAuthorRepository Authors { get; }
+    public IBookRepository Books { get; }
+    public IMemberRepository Members { get; }
+    public IBorrowingRepository Borrowings { get; }
+    Task<int> CommitAsync();
 }

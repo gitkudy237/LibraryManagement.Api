@@ -11,25 +11,18 @@ namespace LibraryManagement.Controllers
     [Route("api/[controller]")]
     public class BorrowingsController : ControllerBase
     {
-        private readonly IBookRepository _bookRepository;
-        private readonly IMemberRepository _memberRepository;
-        private readonly IBorrowingRepository _borrowingRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public BorrowingsController(IBorrowingRepository borrowingRepository, IUnitOfWork unitOfWork,
-         IBookRepository bookRepository, IMemberRepository borrowerRepository)
+        public BorrowingsController(IUnitOfWork unitOfWork)
         {
-            _bookRepository = bookRepository;
-            _borrowingRepository = borrowingRepository;
             _unitOfWork = unitOfWork;
-            _memberRepository = borrowerRepository;
         }
 
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BorrowingDto>>> GetAllBorrowings()
         {
-            var borrowings = await _borrowingRepository.GetAllAsync();
+            var borrowings = await _unitOfWork.Borrowings.GetAllAsync();
             var result = borrowings.Select(b => b.ToBorrowingWithStatusDto());
 
             return Ok(result);
@@ -38,7 +31,7 @@ namespace LibraryManagement.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<BorrowingDto>> GetBorrowing(int id)
         {
-            var borrowing = await _borrowingRepository.GetByIdAsync(id, includeRelated: true);
+            var borrowing = await _unitOfWork.Borrowings.GetByIdAsync(id, includeRelated: true);
 
             return borrowing is null ?
                 NotFound() : Ok(borrowing.ToBorrowingDto());
@@ -47,7 +40,7 @@ namespace LibraryManagement.Controllers
         [HttpGet("overdue")]
         public async Task<ActionResult<IEnumerable<BorrowingDto>>> GetOverdueBorrowings()
         {
-            var overdueBorrowings = await _borrowingRepository.GetOverdue();
+            var overdueBorrowings = await _unitOfWork.Borrowings.GetOverdue();
             var result = overdueBorrowings.Select(ob => ob.ToBorrowingDto());
 
             return Ok(result);
@@ -61,11 +54,11 @@ namespace LibraryManagement.Controllers
 
             var borrowingRequest = createBorrowingDto.ToBorrowingModel();
 
-            var member = await _memberRepository.GetByIdAsync(borrowingRequest.MemberId);
+            var member = await _unitOfWork.Members.GetByIdAsync(borrowingRequest.MemberId);
             if (member is null)
                 return BadRequest("Borrower not found");
 
-            var book = await _bookRepository.GetByIdAsync(borrowingRequest.BookId);
+            var book = await _unitOfWork.Books.GetByIdAsync(borrowingRequest.BookId);
             if (book is null)
                 return BadRequest("Book not found");
             if (book.AvailableCopies < 1)
@@ -73,7 +66,7 @@ namespace LibraryManagement.Controllers
 
             book.AvailableCopies--;
 
-            await _borrowingRepository.AddAsync(borrowingRequest);
+            await _unitOfWork.Borrowings.AddAsync(borrowingRequest);
             await _unitOfWork.CommitAsync();
 
             return CreatedAtAction(
@@ -85,7 +78,7 @@ namespace LibraryManagement.Controllers
         [HttpPut("{borrowingId:int}")]
         public async Task<ActionResult> ReturnBook([FromRoute] int borrowingId)
         {
-            var activeBorrowing = await _borrowingRepository
+            var activeBorrowing = await _unitOfWork.Borrowings
                 .GetByIdAsync(borrowingId, includeRelated: true);
 
             if (activeBorrowing is null)

@@ -15,20 +15,17 @@ namespace LibraryManagement.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private readonly IBookRepository _bookRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public BooksController(IBookRepository bookRepository,
-         IUnitOfWork unitOfWork)
+        public BooksController(IUnitOfWork unitOfWork)
         {
-            _bookRepository = bookRepository;
             _unitOfWork = unitOfWork;
         }
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<BookDto>> GetBook([FromRoute] int id)
         {
-            var book = await _bookRepository.GetByIdAsync(id);
+            var book = await _unitOfWork.Books.GetByIdAsync(id);
 
             return book is null ?
                 NotFound() : Ok(book.ToBookDto());
@@ -39,7 +36,7 @@ namespace LibraryManagement.Controllers
         {
 
             var bookQueryObj = bookQueryObjDto.ToBookQueryObjectModel();
-            var queryResult = await _bookRepository.GetAll(bookQueryObj);
+            var queryResult = await _unitOfWork.Books.GetAll(bookQueryObj);
 
             var result = queryResult.ToBookQueryResultDto();
 
@@ -51,7 +48,7 @@ namespace LibraryManagement.Controllers
         {
             var book = createBookDto.ToBookModel();
 
-            await _bookRepository.AddAsync(book);
+            await _unitOfWork.Books.AddAsync(book);
             await _unitOfWork.CommitAsync();
 
             return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book.ToBookDto());
@@ -60,7 +57,7 @@ namespace LibraryManagement.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult> UpdateBook([FromRoute] int id, [FromBody] UpdateBookDto updateBookDto)
         {
-            var existingBook = await _bookRepository.GetByIdAsync(id);
+            var existingBook = await _unitOfWork.Books.GetByIdAsync(id);
 
             if (existingBook is null)
                 return NotFound("Attempt to update unexisting book");
@@ -74,14 +71,14 @@ namespace LibraryManagement.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteBook([FromRoute] int id)
         {
-            var existingBook = await _bookRepository.GetByIdAsync(id, includeRelated: true);
+            var existingBook = await _unitOfWork.Books.GetByIdAsync(id, includeRelated: true);
 
             if (existingBook is null)
                 return NotFound();
             if (existingBook.Borrowings.Any(b => b.ReturnDate == null))
                 return BadRequest("Cannot delete actively borrowed book");
 
-            _bookRepository.Delete(existingBook);
+            _unitOfWork.Books.Delete(existingBook);
             await _unitOfWork.CommitAsync();
 
             return NoContent();
