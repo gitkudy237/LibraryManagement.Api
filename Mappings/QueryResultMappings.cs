@@ -5,7 +5,7 @@ namespace LibraryManagement.Mappings
 {
     public static class QueryResultMappings
     {
-        public static BookQueryResultDto ToBookQueryResultDto(this BookQueryResult bookQueryResult)
+        public static BookQueryResultDto ToBookQueryResultDto(this QueryResult<Book> bookQueryResult)
         {
             return new BookQueryResultDto
             {

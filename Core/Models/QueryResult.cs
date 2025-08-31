@@ -1,9 +1,9 @@
 
 namespace LibraryManagement.Core.Models
 {
-    public class BookQueryResult
+    public class QueryResult<T>
     {
         public int TotalItems { get; set; }
-        public IEnumerable<Book> Items { get; set; } = [];
+        public IEnumerable<T> Items { get; set; } = [];
     }
 }

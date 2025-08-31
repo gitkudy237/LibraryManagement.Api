@@ -20,9 +20,9 @@ namespace LibraryManagement.Persistence.Repositories
         public void Delete(Book book)
             => _context.Books.Remove(book);
 
-        public async Task<BookQueryResult> GetAll(BookQueryObject bookQueryObj)
+        public async Task<QueryResult<Book>> GetAll(BookQueryObject bookQueryObj)
         {
-            var queryResult = new BookQueryResult();
+            var queryResult = new QueryResult<Book>();
             var books = _context.Books
                 .Include(b => b.Author)
                 .AsQueryable();

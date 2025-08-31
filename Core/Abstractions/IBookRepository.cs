@@ -6,7 +6,7 @@ namespace LibraryManagement.Core.Abstractions
     {
         Task AddAsync(Book book);
         Task<Book?> GetByIdAsync(int id, bool includeRelated = false);
-        Task<BookQueryResult> GetAll(BookQueryObject bookQueryObj);
+        Task<QueryResult<Book>> GetAll(BookQueryObject bookQueryObj);
         void Delete(Book book);
     }
 }
