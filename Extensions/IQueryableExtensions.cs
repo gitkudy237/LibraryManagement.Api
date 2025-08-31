@@ -15,6 +15,14 @@ namespace LibraryManagement.Extensions
             return query;
         }
 
+        public static IQueryable<Author> ApplyFiltering(this IQueryable<Author> query, AuthorQueryObject authorQueryObj)
+        {
+            if (!string.IsNullOrWhiteSpace(authorQueryObj.Name))
+                query = query.Where(a => a.Name.Contains(authorQueryObj.Name));
+
+            return query;
+        }
+
         public static IQueryable<Book> ApplySorting(this IQueryable<Book> query, BookQueryObject bookQueryObj)
         {
             if (!string.IsNullOrWhiteSpace(bookQueryObj.SortBy))
