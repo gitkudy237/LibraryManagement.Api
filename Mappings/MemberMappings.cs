@@ -10,7 +10,6 @@ public static class BorrowerMappings
         return new Member
         {
             Name = CreateMemberDto.Name,
-            Email = CreateMemberDto.Email,
             Phone = CreateMemberDto.Phone
         };
     }
@@ -21,7 +20,6 @@ public static class BorrowerMappings
         {
             Id = MemberModel.Id,
             Name = MemberModel.Name,
-            Email = MemberModel.Email,
             Phone = MemberModel.Phone
         };
     }
@@ -29,7 +27,6 @@ public static class BorrowerMappings
     public static void MapUpdateMember(this Member memberModel, UpdateMemberDto UpdateMemberDto)
     {
         memberModel.Name = UpdateMemberDto.Name;
-        memberModel.Email = UpdateMemberDto.Email;
         memberModel.Phone = UpdateMemberDto.Phone;
     }
 }

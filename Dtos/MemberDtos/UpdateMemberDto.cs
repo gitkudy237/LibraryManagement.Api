@@ -8,9 +8,6 @@ public class UpdateMemberDto
     [StringLength(55)]
     public required string Name { get; set; }
 
-    [Required]
-    [StringLength(55)]
-    public required string Email { get; set; }
 
     [Required]
     [StringLength(55)]
