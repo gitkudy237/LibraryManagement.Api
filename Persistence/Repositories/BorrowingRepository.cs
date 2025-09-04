@@ -2,10 +2,6 @@ using LibraryManagement.Core.Abstractions;
 using LibraryManagement.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
-// TODO: Include borrowing status of single borrowing
-// TODO: Refactor borrowing status logic and make it reusable
-// TODO: Update borrowing dtos accordingly (add status field on dto)
-
 namespace LibraryManagement.Persistence.Repositories
 {
     public class BorrowingRepository : IBorrowingRepository

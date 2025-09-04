@@ -1,4 +1,5 @@
 ﻿using LibraryManagement.Core.Models;
+using LibraryManagement.Dtos.AppUserDtos;
 using LibraryManagement.Dtos.BorrowerDtos;
 
 namespace LibraryManagement.Mappings;
@@ -28,5 +29,15 @@ public static class BorrowerMappings
     {
         memberModel.Name = UpdateMemberDto.Name;
         memberModel.Phone = UpdateMemberDto.Phone;
+    }
+
+    public static ApplicationUser ToApplicationUserModel(this MemberRegistrationDto memberRegistrationDto)
+    {
+        return new ApplicationUser
+        {
+            Id = Guid.NewGuid().ToString().Substring(0, 8),
+            Email = memberRegistrationDto.Email,
+            Role = UserRoles.Member.ToString()
+        };
     }
 }
