@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using LibraryManagement.Core.Abstractions;
 using LibraryManagement.Core.Models;
 using LibraryManagement.Dtos.AppUserDtos;
 using LibraryManagement.Mappings;
@@ -17,11 +18,13 @@ namespace LibraryManagement.Controllers
     [Route("api/[Controller]")]
     public class AccountsController : ControllerBase
     {
-        private readonly LibraryDbContext _context;
+        private readonly IAuthService _authService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public AccountsController(LibraryDbContext context)
+        public AccountsController(IUnitOfWork unitOfWork, IAuthService authService)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
+            _authService = authService;
         }
 
         private static ApplicationUser _user = new();
@@ -29,17 +32,15 @@ namespace LibraryManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(MemberRegistrationDto registrationRequest)
         {
-            if (await _context.Users.AnyAsync(u => u.Email == registrationRequest.Email))
-                return BadRequest();
+            var newUser = await _authService.RegisterAsync(registrationRequest);
 
-            _user = registrationRequest.ToApplicationUserModel();
+            if (newUser is null)
+                return BadRequest("User already exists.");
 
-            var hashedPassword = new PasswordHasher<ApplicationUser>()
-                .HashPassword(_user, registrationRequest.Password);
-            _user.PasswordHash = hashedPassword;
+            var newMember = registrationRequest.ToMemberModel(newUser.Id);
+            await _unitOfWork.Members.AddAsync(newMember);
 
-            await _context.Users.AddAsync(_user);
-            await _context.SaveChangesAsync();
+            await _unitOfWork.CommitAsync();
 
             return Ok(_user);
         }

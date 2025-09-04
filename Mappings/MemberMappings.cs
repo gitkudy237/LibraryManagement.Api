@@ -40,4 +40,14 @@ public static class BorrowerMappings
             Role = UserRoles.Member.ToString()
         };
     }
+
+    public static Member ToMemberModel(this MemberRegistrationDto memberRegistrationDto, string userId)
+    {
+        return new Member
+        {
+            Name = memberRegistrationDto.Name,
+            Phone = memberRegistrationDto.Phone,
+            UserId = userId
+        };
+    }
 }
