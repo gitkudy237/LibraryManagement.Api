@@ -59,6 +59,15 @@ namespace LibraryManagement.Controllers
 
             return Ok(appUser.ToAppUserDto());
         }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<string>> Login([FromBody] LoginDto loginRequest)
+        {
+            var response = await _authService.LoginAsync(loginRequest);
+
+            return response is null ?
+                BadRequest("Incorrect username or password") : Ok(response);
+        }
     }
 
 

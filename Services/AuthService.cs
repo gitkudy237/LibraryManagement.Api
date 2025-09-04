@@ -4,16 +4,19 @@ using LibraryManagement.Dtos.AppUserDtos;
 using LibraryManagement.Mappings;
 using LibraryManagement.Persistence;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagement.Services
 {
     public class AuthService : IAuthService
     {
         private readonly LibraryDbContext _context;
+        private readonly ITokenService _tokenService;
 
-        public AuthService(LibraryDbContext context)
+        public AuthService(LibraryDbContext context, ITokenService tokenService)
         {
             _context = context;
+            _tokenService = tokenService;
         }
 
         public async Task<ApplicationUser?> RegisterAsync(UserRegistrationRequest registrationRequest)
@@ -31,6 +34,19 @@ namespace LibraryManagement.Services
             return newUser;
         }
 
+        public async Task<string?> LoginAsync(LoginDto loginRequest)
+        {
+            var appUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginRequest.Email);
+
+            if (appUser is null) return null;
+
+            if (new PasswordHasher<ApplicationUser>()
+                .VerifyHashedPassword(appUser, appUser.PasswordHash, loginRequest.Password) == PasswordVerificationResult.Failed)
+                return null;
+
+            var token = _tokenService.CreateToken(appUser);
+            return token;
+        }
 
     }
 }
