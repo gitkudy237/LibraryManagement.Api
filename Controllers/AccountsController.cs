@@ -29,7 +29,7 @@ namespace LibraryManagement.Controllers
 
         private static ApplicationUser _user = new();
 
-        [HttpPost]
+        [HttpPost("member")]
         public async Task<IActionResult> RegisterMember(MemberRegistrationDto memberRegistration)
         {
             var registrationRequest = memberRegistration.ToRegistrationRequest();
@@ -43,14 +43,22 @@ namespace LibraryManagement.Controllers
 
             await _unitOfWork.CommitAsync();
 
-            return Ok(_user);
+            return Ok(appUser.ToAppUserDto());
         }
 
-        // [HttpPost]
-        // public async Task<IActionResult> RegisterAdmin(AdminRegistrationDto registrationRequest)
-        // {
+        [HttpPost("admin")]
+        public async Task<IActionResult> RegisterAdmin(AdminRegistrationDto adminRegistration)
+        {
+            var registrationRequest = adminRegistration.ToRegistrationRequest();
+            var appUser = await _authService.RegisterAsync(registrationRequest);
 
-        // }
+            if (appUser is null)
+                return BadRequest("User already exists.");
+
+            await _unitOfWork.CommitAsync();
+
+            return Ok(appUser.ToAppUserDto());
+        }
     }
 
 

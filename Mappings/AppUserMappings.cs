@@ -34,5 +34,14 @@ namespace LibraryManagement.Mappings
                 Role = UserRoles.Member.ToString()
             };
         }
+
+        public static AppUserDto ToAppUserDto(this ApplicationUser appUser)
+        {
+            return new AppUserDto
+            {
+                Email = appUser.Email,
+                Role = appUser.Role
+            };
+        }
     }
 }
