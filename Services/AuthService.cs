@@ -16,7 +16,7 @@ namespace LibraryManagement.Services
             _context = context;
         }
 
-        public async Task<ApplicationUser?> RegisterAsync(MemberRegistrationDto registrationRequest)
+        public async Task<ApplicationUser?> RegisterAsync(UserRegistrationRequest registrationRequest)
         {
             if (_context.Users.Any(u => u.Email == registrationRequest.Email))
                 return null;
@@ -30,5 +30,7 @@ namespace LibraryManagement.Services
 
             return newUser;
         }
+
+
     }
 }

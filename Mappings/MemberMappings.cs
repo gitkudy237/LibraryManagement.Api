@@ -31,16 +31,6 @@ public static class BorrowerMappings
         memberModel.Phone = UpdateMemberDto.Phone;
     }
 
-    public static ApplicationUser ToApplicationUserModel(this MemberRegistrationDto memberRegistrationDto)
-    {
-        return new ApplicationUser
-        {
-            Id = Guid.NewGuid().ToString().Substring(0, 8),
-            Email = memberRegistrationDto.Email,
-            Role = UserRoles.Member.ToString()
-        };
-    }
-
     public static Member ToMemberModel(this MemberRegistrationDto memberRegistrationDto, string userId)
     {
         return new Member

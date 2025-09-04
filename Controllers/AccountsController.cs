@@ -30,20 +30,27 @@ namespace LibraryManagement.Controllers
         private static ApplicationUser _user = new();
 
         [HttpPost]
-        public async Task<IActionResult> Register(MemberRegistrationDto registrationRequest)
+        public async Task<IActionResult> RegisterMember(MemberRegistrationDto memberRegistration)
         {
-            var newUser = await _authService.RegisterAsync(registrationRequest);
+            var registrationRequest = memberRegistration.ToRegistrationRequest();
+            var appUser = await _authService.RegisterAsync(registrationRequest);
 
-            if (newUser is null)
+            if (appUser is null)
                 return BadRequest("User already exists.");
 
-            var newMember = registrationRequest.ToMemberModel(newUser.Id);
-            await _unitOfWork.Members.AddAsync(newMember);
+            var member = memberRegistration.ToMemberModel(appUser.Id);
+            await _unitOfWork.Members.AddAsync(member);
 
             await _unitOfWork.CommitAsync();
 
             return Ok(_user);
         }
+
+        // [HttpPost]
+        // public async Task<IActionResult> RegisterAdmin(AdminRegistrationDto registrationRequest)
+        // {
+
+        // }
     }
 
 
