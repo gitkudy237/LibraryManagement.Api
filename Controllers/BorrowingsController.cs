@@ -2,6 +2,7 @@ using LibraryManagement.Core.Abstractions;
 using LibraryManagement.Dtos.BorrowingsDto;
 using LibraryManagement.Mappings;
 using LibraryManagement.Persistence;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +19,7 @@ namespace LibraryManagement.Controllers
             _unitOfWork = unitOfWork;
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BorrowingDto>>> GetAllBorrowings()
         {
@@ -28,6 +29,8 @@ namespace LibraryManagement.Controllers
             return Ok(result);
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<BorrowingDto>> GetBorrowing(int id)
         {
@@ -37,6 +40,7 @@ namespace LibraryManagement.Controllers
                 NotFound() : Ok(borrowing.ToBorrowingDto());
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("overdue")]
         public async Task<ActionResult<IEnumerable<BorrowingDto>>> GetOverdueBorrowings()
         {
@@ -46,6 +50,7 @@ namespace LibraryManagement.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Member")]
         [HttpPost]
         public async Task<ActionResult> BorrowBook([FromBody] CreateBorrowingDto createBorrowingDto)
         {
@@ -75,6 +80,7 @@ namespace LibraryManagement.Controllers
 
         }
 
+        [Authorize(Roles = "Member")]
         [HttpPut("{borrowingId:int}")]
         public async Task<ActionResult> ReturnBook([FromRoute] int borrowingId)
         {

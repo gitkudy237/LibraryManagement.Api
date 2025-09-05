@@ -5,6 +5,7 @@ using LibraryManagement.Dtos.QueryObjectDto;
 using LibraryManagement.Dtos.QueryResultDtos;
 using LibraryManagement.Mappings;
 using LibraryManagement.Persistence;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,6 +41,8 @@ public class AuthorsController : ControllerBase
         return Ok(result);
     }
 
+
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<Author>> CreateAuthor([FromBody] CreateAuthorDto createAuthorDto)
     {
@@ -50,6 +53,7 @@ public class AuthorsController : ControllerBase
         return CreatedAtAction(nameof(GetAuthor), new { id = author.Id }, author.ToAuthorDto());
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id:int}")]
     public async Task<ActionResult> UpdateAuthor([FromRoute] int id, [FromBody] UpdateAuthorDto updateAuthorDto)
     {
@@ -64,6 +68,7 @@ public class AuthorsController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> DeleteAuthor([FromRoute] int id)
     {

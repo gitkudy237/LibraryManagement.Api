@@ -56,6 +56,7 @@ namespace LibraryManagement.Controllers
             return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book.ToBookDto());
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}")]
         public async Task<ActionResult> UpdateBook([FromRoute] int id, [FromBody] UpdateBookDto updateBookDto)
         {
@@ -70,6 +71,7 @@ namespace LibraryManagement.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteBook([FromRoute] int id)
         {
