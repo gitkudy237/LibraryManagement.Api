@@ -5,6 +5,7 @@ using LibraryManagement.Dtos.QueryResultDtos;
 using LibraryManagement.Extensions;
 using LibraryManagement.Mappings;
 using LibraryManagement.Persistence;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -43,6 +44,7 @@ namespace LibraryManagement.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<BookDto>> AddBook([FromBody] CreateBookDto createBookDto)
         {
