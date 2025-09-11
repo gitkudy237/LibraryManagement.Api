@@ -31,7 +31,7 @@ namespace LibraryManagement.Controllers
 
         private static ApplicationUser _user = new();
 
-        [HttpPost("member")]
+        [HttpPost("register/member")]
         public async Task<IActionResult> RegisterMember(MemberRegistrationDto memberRegistration)
         {
             var registrationRequest = memberRegistration.ToRegistrationRequest();
@@ -48,7 +48,7 @@ namespace LibraryManagement.Controllers
             return Ok(appUser.ToAppUserDto());
         }
 
-        [HttpPost("admin")]
+        [HttpPost("register/admin")]
         public async Task<IActionResult> RegisterAdmin(AdminRegistrationDto adminRegistration)
         {
             var registrationRequest = adminRegistration.ToRegistrationRequest();
