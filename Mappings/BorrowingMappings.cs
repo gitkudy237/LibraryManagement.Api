@@ -32,12 +32,12 @@ namespace LibraryManagement.Mappings
             };
         }
 
-        public static Borrowing ToBorrowingModel(this CreateBorrowingDto borrowingDto)
+        public static Borrowing ToBorrowingModel(this CreateBorrowingDto borrowingDto, int memberId)
         {
             return new Borrowing
             {
                 BookId = borrowingDto.BookId,
-                MemberId = borrowingDto.MemberId,
+                MemberId = memberId,
                 BorrowingDate = borrowingDto.BorrowingDate,
                 DueDate = borrowingDto.DueDate
             };

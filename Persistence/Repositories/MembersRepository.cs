@@ -37,5 +37,15 @@ namespace LibraryManagement.Persistence.Repositories
                 .Include(b => b.Borrowings)
                 .FirstOrDefaultAsync(b => b.Id == id);
         }
+
+        public async Task<Member?> GetByUserIdAsync(string userId, bool includeRelated = false)
+        {
+            if (!includeRelated)
+                return await _context.Members.FirstOrDefaultAsync(m => m.UserId == userId);
+
+            return await _context.Members
+                .Include(b => b.Borrowings)
+                .FirstOrDefaultAsync(b => b.UserId == userId);
+        }
     }
 }

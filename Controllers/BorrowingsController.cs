@@ -5,6 +5,7 @@ using LibraryManagement.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace LibraryManagement.Controllers
 {
@@ -54,15 +55,19 @@ namespace LibraryManagement.Controllers
         [HttpPost]
         public async Task<ActionResult> BorrowBook([FromBody] CreateBorrowingDto createBorrowingDto)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Forbid();
+
             if (createBorrowingDto.DueDate < createBorrowingDto.BorrowingDate)
                 return BadRequest("Due date is sooner than borrowing date");
 
-            var borrowingRequest = createBorrowingDto.ToBorrowingModel();
 
-            var member = await _unitOfWork.Members.GetByIdAsync(borrowingRequest.MemberId);
+            var member = await _unitOfWork.Members.GetByUserIdAsync(userId);
             if (member is null)
                 return BadRequest("Borrower not found");
 
+            var borrowingRequest = createBorrowingDto.ToBorrowingModel(member.Id);
             var book = await _unitOfWork.Books.GetByIdAsync(borrowingRequest.BookId);
             if (book is null)
                 return BadRequest("Book not found");
