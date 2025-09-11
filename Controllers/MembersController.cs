@@ -21,6 +21,7 @@ namespace LibraryManagement.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<MemberDto>> GetMember([FromRoute] int id)
         {

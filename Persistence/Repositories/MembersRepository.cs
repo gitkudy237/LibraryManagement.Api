@@ -25,17 +25,22 @@ namespace LibraryManagement.Persistence.Repositories
 
         public async Task<IEnumerable<Member>> GetAllAsync()
         {
-            return await _context.Members.ToListAsync();
+            return await _context.Members
+                .Include(m => m.User)
+                .ToListAsync();
         }
 
-        public async Task<Member?> GetByIdAsync(int id, bool includeRelated = false)
+        public async Task<Member?> GetByIdAsync(int id, bool includeBorrowings = false)
         {
-            if (!includeRelated)
-                return await _context.Members.FindAsync(id);
+            if (!includeBorrowings)
+                return await _context.Members
+                    .Include(m => m.User)
+                    .FirstOrDefaultAsync(m => m.Id == id);
 
             return await _context.Members
-                .Include(b => b.Borrowings)
-                .FirstOrDefaultAsync(b => b.Id == id);
+                .Include(m => m.Borrowings)
+                .Include(m => m.User)
+                .FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task<Member?> GetByUserIdAsync(string userId, bool includeRelated = false)
@@ -44,8 +49,8 @@ namespace LibraryManagement.Persistence.Repositories
                 return await _context.Members.FirstOrDefaultAsync(m => m.UserId == userId);
 
             return await _context.Members
-                .Include(b => b.Borrowings)
-                .FirstOrDefaultAsync(b => b.UserId == userId);
+                .Include(m => m.Borrowings)
+                .FirstOrDefaultAsync(m => m.UserId == userId);
         }
     }
 }

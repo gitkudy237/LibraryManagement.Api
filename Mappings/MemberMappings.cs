@@ -4,7 +4,7 @@ using LibraryManagement.Dtos.BorrowerDtos;
 
 namespace LibraryManagement.Mappings;
 
-public static class BorrowerMappings
+public static class MemberMappings
 {
     public static Member ToMemberModel(this CreateMemberDto CreateMemberDto)
     {
@@ -21,7 +21,8 @@ public static class BorrowerMappings
         {
             Id = MemberModel.Id,
             Name = MemberModel.Name,
-            Phone = MemberModel.Phone
+            Phone = MemberModel.Phone,
+            Email = MemberModel.User.Email
         };
     }
 
