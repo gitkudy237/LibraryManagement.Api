@@ -9,9 +9,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-// TODO: Protect api endpoints
-// TODO: Use Role-based authorization
-// TODO: Update borrowing endpoint so that it automatically gets memberId from authenticated user
 // TODO: Remove the Create member endpoint from MembersController 
 // TODO: Update Member management logic
 namespace LibraryManagement.Controllers

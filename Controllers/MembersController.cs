@@ -19,17 +19,6 @@ namespace LibraryManagement.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<MemberDto>> CreateMember([FromBody] CreateMemberDto CreateMemberDto)
-        {
-            var member = CreateMemberDto.ToMemberModel();
-
-            await _unitOfWork.Members.AddAsync(member);
-            await _unitOfWork.CommitAsync();
-
-            return CreatedAtAction(nameof(GetMember), new { id = member.Id }, member.ToMemberDto());
-        }
-
         [HttpGet("{id:int}")]
         public async Task<ActionResult<MemberDto>> GetMember([FromRoute] int id)
         {
