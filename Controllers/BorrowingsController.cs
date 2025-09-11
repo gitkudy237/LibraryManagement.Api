@@ -56,7 +56,7 @@ namespace LibraryManagement.Controllers
         public async Task<ActionResult> BorrowBook([FromBody] CreateBorrowingDto createBorrowingDto)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
                 return Forbid();
 
             if (createBorrowingDto.DueDate < createBorrowingDto.BorrowingDate)

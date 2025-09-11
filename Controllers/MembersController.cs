@@ -1,7 +1,9 @@
-﻿using LibraryManagement.Core.Abstractions;
+﻿using System.Security.Claims;
+using LibraryManagement.Core.Abstractions;
 using LibraryManagement.Dtos.BorrowerDtos;
 using LibraryManagement.Mappings;
 using LibraryManagement.Persistence;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +30,7 @@ namespace LibraryManagement.Controllers
                 NotFound() : Ok(member.ToMemberDto());
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetAllMembers()
         {
@@ -37,10 +40,15 @@ namespace LibraryManagement.Controllers
             return Ok(result);
         }
 
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult> UpdateMember([FromRoute] int id, [FromBody] UpdateMemberDto updateMemberDto)
+        [Authorize(Roles = "Member")]
+        [HttpPut]
+        public async Task<ActionResult> UpdateMember([FromBody] UpdateMemberDto updateMemberDto)
         {
-            var existingMember = await _unitOfWork.Members.GetByIdAsync(id);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId is null)
+                return Forbid();
+
+            var existingMember = await _unitOfWork.Members.GetByUserIdAsync(userId);
 
             if (existingMember is null)
                 return NotFound();

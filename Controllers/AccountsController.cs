@@ -9,8 +9,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-// TODO: Remove the Create member endpoint from MembersController 
-// TODO: Update Member management logic
 namespace LibraryManagement.Controllers
 {
     [ApiController]
