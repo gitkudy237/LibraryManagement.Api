@@ -60,18 +60,20 @@ namespace LibraryManagement.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult> DeleteMember([FromRoute] int id)
+        // TODO: delete logic should be review later
+        /* [Authorize(Roles = "Admin")]
+        [HttpDelete("userId")]
+        public async Task<ActionResult> DeleteMember([FromRoute] string userId)
         {
-            var existingMember = await _unitOfWork.Members.GetByIdAsync(id);
+            var existingMember = await _unitOfWork.Members.GetByUserIdAsync(userId);
 
             if (existingMember is null)
                 return NotFound();
-
+            
             _unitOfWork.Members.Delete(existingMember);
             await _unitOfWork.CommitAsync();
 
             return NoContent();
-        }
+        } */
     }
 }

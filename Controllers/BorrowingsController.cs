@@ -73,10 +73,6 @@ namespace LibraryManagement.Controllers
             if (string.IsNullOrWhiteSpace(userId))
                 return Forbid();
 
-            if (createBorrowingDto.DueDate < createBorrowingDto.BorrowingDate)
-                return BadRequest("Due date is sooner than borrowing date");
-
-
             var member = await _unitOfWork.Members.GetByUserIdAsync(userId);
             if (member is null)
                 return BadRequest("Borrower not found");
@@ -100,7 +96,7 @@ namespace LibraryManagement.Controllers
         }
 
         [Authorize(Roles = "Member")]
-        [HttpPut("{borrowingId:int}")]
+        [HttpPut("return/{borrowingId:int}")]
         public async Task<ActionResult> ReturnBook([FromRoute] int borrowingId)
         {
             var activeBorrowing = await _unitOfWork.Borrowings

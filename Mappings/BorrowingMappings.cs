@@ -38,8 +38,9 @@ namespace LibraryManagement.Mappings
             {
                 BookId = borrowingDto.BookId,
                 MemberId = memberId,
-                BorrowingDate = borrowingDto.BorrowingDate,
-                DueDate = borrowingDto.DueDate
+                BorrowingDate = DateOnly.FromDateTime(DateTime.Now),
+                // should return book one week after borrowing date
+                DueDate = DateOnly.FromDateTime(DateTime.Now).AddDays(7)
             };
         }
 
