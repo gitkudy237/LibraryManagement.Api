@@ -40,5 +40,12 @@ namespace LibraryManagement.Persistence.Repositories
                         b.ReturnDate != null)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Borrowing>> GetMemberBorrowings(string userId)
+        {
+            return await _context.Borrowings
+                .Where(b => b.Member.UserId == userId)
+                .ToListAsync();
+        }
     }
 }

@@ -52,6 +52,20 @@ namespace LibraryManagement.Controllers
         }
 
         [Authorize(Roles = "Member")]
+        [HttpGet("member")]
+        public async Task<ActionResult<IEnumerable<BorrowingDto>>> GetMemberBorrowings()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId is null)
+                return Forbid();
+
+            var borrowings = await _unitOfWork.Borrowings.GetMemberBorrowings(userId);
+            var result = borrowings.Select(b => b.ToBorrowingDto());
+
+            return Ok(result);
+        }
+
+        [Authorize(Roles = "Member")]
         [HttpPost]
         public async Task<ActionResult> BorrowBook([FromBody] CreateBorrowingDto createBorrowingDto)
         {
