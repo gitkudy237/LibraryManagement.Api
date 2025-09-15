@@ -67,6 +67,8 @@ namespace LibraryManagement.Controllers
 
         [Authorize(Roles = "Member")]
         [HttpPost]
+
+        // TODO: Make sure member cannot borrow a book he currently has borrowed
         public async Task<ActionResult> BorrowBook([FromBody] CreateBorrowingDto createBorrowingDto)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

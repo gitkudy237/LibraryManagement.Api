@@ -5,6 +5,7 @@ using LibraryManagement.Core.Models;
 using LibraryManagement.Dtos.AppUserDtos;
 using LibraryManagement.Mappings;
 using LibraryManagement.Persistence;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -43,6 +44,7 @@ namespace LibraryManagement.Controllers
             return Ok(appUser.ToAppUserDto());
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("register/admin")]
         public async Task<IActionResult> RegisterAdmin(AdminRegistrationDto adminRegistration)
         {
