@@ -78,6 +78,10 @@ namespace LibraryManagement.Controllers
                 return BadRequest("Borrower not found");
 
             var borrowingRequest = createBorrowingDto.ToBorrowingModel(member.Id);
+
+            if (await _unitOfWork.Borrowings.HasMemberBorrowedWithoutReturning(borrowingRequest.BookId, member.Id))
+                return BadRequest("Member has borrowed this book but has not returned it.");
+
             var book = await _unitOfWork.Books.GetByIdAsync(borrowingRequest.BookId);
             if (book is null)
                 return BadRequest("Book not found");

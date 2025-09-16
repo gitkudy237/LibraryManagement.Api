@@ -9,5 +9,6 @@ namespace LibraryManagement.Core.Abstractions
         Task<IEnumerable<Borrowing>> GetOverdue();
         Task<IEnumerable<Borrowing>> GetMemberBorrowings(string userId);
         Task AddAsync(Borrowing borrowing);
+        Task<bool> HasMemberBorrowedWithoutReturning(int bookId, int memberId);
     }
 }

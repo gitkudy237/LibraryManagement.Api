@@ -47,5 +47,15 @@ namespace LibraryManagement.Persistence.Repositories
                 .Where(b => b.Member.UserId == userId)
                 .ToListAsync();
         }
+
+        public async Task<bool> HasMemberBorrowedWithoutReturning(int bookId, int memberId)
+        {
+            // I determine whether there exist the book borrowed by the member but not yet returned
+            return await _context.Borrowings
+                .FirstOrDefaultAsync(
+                    b => b.BookId == bookId
+                    && b.MemberId == memberId
+                    && b.ReturnDate == null) is not null;
+        }
     }
 }

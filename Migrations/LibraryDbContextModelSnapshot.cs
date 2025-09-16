@@ -41,7 +41,7 @@ namespace LibraryManagement.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagement.Core.Models.Author", b =>
@@ -65,7 +65,7 @@ namespace LibraryManagement.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Authors");
+                    b.ToTable("Authors", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagement.Core.Models.Book", b =>
@@ -100,7 +100,7 @@ namespace LibraryManagement.Migrations
                     b.HasIndex("Isbn")
                         .IsUnique();
 
-                    b.ToTable("Books");
+                    b.ToTable("Books", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagement.Core.Models.Borrowing", b =>
@@ -132,7 +132,38 @@ namespace LibraryManagement.Migrations
 
                     b.HasIndex("MemberId");
 
-                    b.ToTable("Borrowings");
+                    b.ToTable("Borrowings", (string)null);
+                });
+
+            modelBuilder.Entity("LibraryManagement.Core.Models.Librarian", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Librarians", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagement.Core.Models.Member", b =>
@@ -159,7 +190,7 @@ namespace LibraryManagement.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Members");
+                    b.ToTable("Members", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagement.Core.Models.Book", b =>
@@ -190,6 +221,17 @@ namespace LibraryManagement.Migrations
                     b.Navigation("Book");
 
                     b.Navigation("Member");
+                });
+
+            modelBuilder.Entity("LibraryManagement.Core.Models.Librarian", b =>
+                {
+                    b.HasOne("LibraryManagement.Core.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("LibraryManagement.Core.Models.Member", b =>
