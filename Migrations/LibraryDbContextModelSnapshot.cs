@@ -166,6 +166,33 @@ namespace LibraryManagement.Migrations
                     b.ToTable("Librarians", (string)null);
                 });
 
+            modelBuilder.Entity("LibraryManagement.Core.Models.Librarian", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Librarians");
+                });
+
             modelBuilder.Entity("LibraryManagement.Core.Models.Member", b =>
                 {
                     b.Property<int>("Id")
