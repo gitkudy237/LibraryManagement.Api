@@ -28,7 +28,7 @@ namespace LibraryManagement.Core.Models
             return new() { Success = true, Data = data };
         }
 
-        public static OperationResult<T> Fail(T data, string? errorMessage = null, int? errorCode = null)
+        public static new OperationResult<T> Fail(string? errorMessage = null, int? errorCode = null)
         {
             return new() { Success = false, Data = default, ErrorMessage = errorMessage, ErrorCode = errorCode };
         }

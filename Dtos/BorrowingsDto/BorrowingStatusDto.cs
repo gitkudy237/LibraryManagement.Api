@@ -1,6 +1,6 @@
 namespace LibraryManagement.Dtos.BorrowingsDto
 {
-    public class BorrowingStatusDto
+    public class BorrowingWithStatusDto
     {
         public int Id { get; set; }
         public int BookId { get; set; }

@@ -18,9 +18,9 @@ namespace LibraryManagement.Mappings
             };
         }
 
-        public static BorrowingStatusDto ToBorrowingWithStatusDto(this Borrowing borrowingModel)
+        public static BorrowingWithStatusDto ToBorrowingWithStatusDto(this Borrowing borrowingModel)
         {
-            return new BorrowingStatusDto
+            return new BorrowingWithStatusDto
             {
                 Id = borrowingModel.Id,
                 BookId = borrowingModel.BookId,

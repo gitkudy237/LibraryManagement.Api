@@ -1,4 +1,5 @@
 using LibraryManagement.Core.Abstractions;
+using LibraryManagement.Core.Models;
 using LibraryManagement.Dtos.BorrowingsDto;
 using LibraryManagement.Mappings;
 using LibraryManagement.Persistence;
@@ -24,7 +25,7 @@ namespace LibraryManagement.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BorrowingDto>>> GetAllBorrowings()
+        public async Task<ActionResult<IEnumerable<BorrowingWithStatusDto>>> GetAllBorrowings()
         {
             var result = await _borrowingService.GetAllBorrowingsAsync();
             return Ok(result);
@@ -33,34 +34,32 @@ namespace LibraryManagement.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<BorrowingDto>> GetBorrowing(int id)
+        public async Task<ActionResult<BorrowingWithStatusDto>> GetBorrowing(int id)
         {
-            var borrowing = await _unitOfWork.Borrowings.GetByIdAsync(id, includeRelated: true);
+            var result = await _borrowingService.GetBorrowingByIdAsync(id);
 
-            return borrowing is null ?
-                NotFound() : Ok(borrowing.ToBorrowingDto());
+            return result is null ?
+                NotFound() : Ok(result);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpGet("overdue")]
         public async Task<ActionResult<IEnumerable<BorrowingDto>>> GetOverdueBorrowings()
         {
-            var overdueBorrowings = await _unitOfWork.Borrowings.GetOverdue();
-            var result = overdueBorrowings.Select(ob => ob.ToBorrowingDto());
+            var result = await _borrowingService.GetOverdueBorrowingsAsync();
 
             return Ok(result);
         }
 
         [Authorize(Roles = "Member")]
         [HttpGet("member")]
-        public async Task<ActionResult<IEnumerable<BorrowingDto>>> GetMemberBorrowings()
+        public async Task<ActionResult<IEnumerable<BorrowingWithStatusDto>>> GetMemberBorrowings()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId is null)
                 return Forbid();
 
-            var borrowings = await _unitOfWork.Borrowings.GetMemberBorrowings(userId);
-            var result = borrowings.Select(b => b.ToBorrowingDto());
+            var result = await _borrowingService.GetMemberBorrowingsAsync(userId);
 
             return Ok(result);
         }
@@ -68,36 +67,24 @@ namespace LibraryManagement.Controllers
         [Authorize(Roles = "Member")]
         [HttpPost]
 
-        // TODO: Make sure member cannot borrow a book he currently has borrowed
-        public async Task<ActionResult> BorrowBook([FromBody] CreateBorrowingDto createBorrowingDto)
+        public async Task<ActionResult> CreateBorrowing([FromBody] CreateBorrowingDto createBorrowingDto)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrWhiteSpace(userId))
                 return Forbid();
 
-            var member = await _unitOfWork.Members.GetByUserIdAsync(userId);
-            if (member is null)
-                return BadRequest("Borrower not found");
-
-            var borrowingRequest = createBorrowingDto.ToBorrowingModel(member.Id);
-
-            if (await _unitOfWork.Borrowings.HasMemberBorrowedWithoutReturning(borrowingRequest.BookId, member.Id))
-                return BadRequest("Member has borrowed this book but has not returned it.");
-
-            var book = await _unitOfWork.Books.GetByIdAsync(borrowingRequest.BookId);
-            if (book is null)
-                return BadRequest("Book not found");
-            if (book.AvailableCopies < 1)
-                return BadRequest("Book is not availble at the moment");
-
-            book.AvailableCopies--;
-
-            await _unitOfWork.Borrowings.AddAsync(borrowingRequest);
-            await _unitOfWork.CommitAsync();
+            var result = await _borrowingService.BorrowBookAsync(userId, createBorrowingDto);
+            if (!result.Success)
+                return result.ErrorCode switch
+                {
+                    400 => BadRequest(result.ErrorMessage),
+                    404 => NotFound(result.ErrorMessage),
+                    _ => StatusCode(result.ErrorCode ?? 500, result.ErrorMessage)
+                };
 
             return CreatedAtAction(
-                nameof(GetBorrowing), new { id = borrowingRequest.Id },
-                borrowingRequest.ToBorrowingDto());
+                    nameof(GetBorrowing), new { id = result.Data?.Id },
+                    result.Data);
 
         }
 
@@ -105,21 +92,9 @@ namespace LibraryManagement.Controllers
         [HttpPut("return/{borrowingId:int}")]
         public async Task<ActionResult> ReturnBook([FromRoute] int borrowingId)
         {
-            var activeBorrowing = await _unitOfWork.Borrowings
-                .GetByIdAsync(borrowingId, includeRelated: true);
+            var result = await _borrowingService.ReturnBookAsync(borrowingId);
 
-            if (activeBorrowing is null)
-                return BadRequest("Borrowing not found");
-            if (activeBorrowing.ReturnDate is not null)
-                return BadRequest("Book already returned");
-
-            activeBorrowing.ReturnDate = DateOnly.FromDateTime(DateTime.Now);
-            activeBorrowing.Book.AvailableCopies++;
-
-            await _unitOfWork.CommitAsync();
-
-            return NoContent();
-
+            return !result.Success ? BadRequest(result.ErrorMessage) : NoContent();
         }
     }
 }
