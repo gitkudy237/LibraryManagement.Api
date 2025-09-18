@@ -14,19 +14,19 @@ namespace LibraryManagement.Controllers
     public class BorrowingsController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IBorrowingService _borrowingService;
 
-        public BorrowingsController(IUnitOfWork unitOfWork)
+        public BorrowingsController(IUnitOfWork unitOfWork, IBorrowingService borrowingService)
         {
             _unitOfWork = unitOfWork;
+            _borrowingService = borrowingService;
         }
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BorrowingDto>>> GetAllBorrowings()
         {
-            var borrowings = await _unitOfWork.Borrowings.GetAllAsync();
-            var result = borrowings.Select(b => b.ToBorrowingWithStatusDto());
-
+            var result = await _borrowingService.GetAllBorrowingsAsync();
             return Ok(result);
         }
 

@@ -5,7 +5,7 @@ namespace LibraryManagement.Core.Abstractions
 {
     public interface IBorrowingService
     {
-        Task<OperationResult<IEnumerable<BorrowingDto>>> GetAllBorrowingsAsync();
+        Task<IEnumerable<BorrowingStatusDto>> GetAllBorrowingsAsync();
 
     }
 }
