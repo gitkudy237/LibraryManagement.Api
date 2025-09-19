@@ -57,5 +57,17 @@ namespace LibraryManagement.Persistence.Repositories
                     && b.MemberId == memberId
                     && b.ReturnDate == null) is not null;
         }
+
+        public async Task<Borrowing?> GetByBookAndMemberAsync(int bookId, int memberId, bool includeRelated = false)
+        {
+            if (!includeRelated)
+                return await _context.Borrowings
+                    .FirstOrDefaultAsync(b => b.BookId == bookId && b.MemberId == memberId);
+
+            return await _context.Borrowings
+                .Include(b => b.Book)
+                .FirstOrDefaultAsync(b => b.BookId == bookId && b.MemberId == memberId);
+
+        }
     }
 }

@@ -10,6 +10,6 @@ namespace LibraryManagement.Core.Abstractions
         Task<IEnumerable<BorrowingDto>> GetOverdueBorrowingsAsync();
         Task<IEnumerable<BorrowingWithStatusDto>> GetMemberBorrowingsAsync(string userId);
         Task<OperationResult<BorrowingDto>> BorrowBookAsync(string userId, CreateBorrowingDto createBorrowingDto);
-        Task<OperationResult> ReturnBookAsync(int borrowingId);
+        Task<OperationResult> ReturnBookAsync(string userId, int bookId);
     }
 }

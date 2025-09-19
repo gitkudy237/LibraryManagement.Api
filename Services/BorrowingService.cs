@@ -71,19 +71,23 @@ namespace LibraryManagement.Services
             return result;
         }
 
-        public async Task<OperationResult> ReturnBookAsync(int borrowingId)
+        public async Task<OperationResult> ReturnBookAsync(string userId, int bookId)
         {
-            var activeBorrowing = await _unitOfWork.Borrowings
-                .GetByIdAsync(borrowingId, includeRelated: true);
+            var member = await _unitOfWork.Members.GetByUserIdAsync(userId);
+            if (member is null)
+                return OperationResult.Fail(errorMessage: "Member not found", errorCode: 404);
 
-            if (activeBorrowing is null)
+            var borrowing = await _unitOfWork.Borrowings
+                .GetByBookAndMemberAsync(bookId, member.Id, includeRelated: true);
+
+            if (borrowing is null)
                 return OperationResult.Fail(errorMessage: "You have not borrowed this book", errorCode: 400);
 
-            if (activeBorrowing.ReturnDate is not null)
+            if (borrowing.ReturnDate is not null)
                 return OperationResult.Fail(errorMessage: "Book already returned", errorCode: 400);
 
-            activeBorrowing.ReturnDate = DateOnly.FromDateTime(DateTime.Now);
-            activeBorrowing.Book.AvailableCopies++;
+            borrowing.ReturnDate = DateOnly.FromDateTime(DateTime.Now);
+            borrowing.Book.AvailableCopies++;
 
             await _unitOfWork.CommitAsync();
 

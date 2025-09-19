@@ -89,12 +89,22 @@ namespace LibraryManagement.Controllers
         }
 
         [Authorize(Roles = "Member")]
-        [HttpPut("return/{borrowingId:int}")]
-        public async Task<ActionResult> ReturnBook([FromRoute] int borrowingId)
+        [HttpPut("{bookId:int}/return")]
+        public async Task<ActionResult> ReturnBook([FromRoute] int bookId)
         {
-            var result = await _borrowingService.ReturnBookAsync(borrowingId);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrWhiteSpace(userId))
+                return Forbid();
+            var result = await _borrowingService.ReturnBookAsync(userId, bookId);
 
-            return !result.Success ? BadRequest(result.ErrorMessage) : NoContent();
+            if (!result.Success)
+                return result.ErrorCode switch
+                {
+                    400 => BadRequest(result.ErrorMessage),
+                    404 => NotFound(result.ErrorMessage),
+                    _ => StatusCode(result.ErrorCode ?? 500, result.ErrorMessage)
+                };
+            return NoContent();
         }
     }
 }
