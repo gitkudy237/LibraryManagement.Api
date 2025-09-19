@@ -16,30 +16,26 @@ namespace LibraryManagement.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IBookService _bookService;
 
-        public BooksController(IUnitOfWork unitOfWork)
+        public BooksController(IBookService bookService)
         {
-            _unitOfWork = unitOfWork;
+            _bookService = bookService;
         }
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<BookDto>> GetBook([FromRoute] int id)
         {
-            var book = await _unitOfWork.Books.GetByIdAsync(id);
+            var result = await _bookService.GetBookByIdAsync(id);
 
-            return book is null ?
-                NotFound() : Ok(book.ToBookDto());
+            return result is null ?
+                NotFound() : Ok(result);
         }
 
         [HttpGet]
         public async Task<ActionResult<BookQueryResultDto>> GetBooks([FromQuery] BookQueryObjectDto bookQueryObjDto)
         {
-
-            var bookQueryObj = bookQueryObjDto.ToBookQueryObjectModel();
-            var queryResult = await _unitOfWork.Books.GetAll(bookQueryObj);
-
-            var result = queryResult.ToBookQueryResultDto();
+            var result = await _bookService.GetAllBooksAsync(bookQueryObjDto);
 
             return Ok(result);
         }
@@ -48,25 +44,23 @@ namespace LibraryManagement.Controllers
         [HttpPost]
         public async Task<ActionResult<BookDto>> AddBook([FromBody] CreateBookDto createBookDto)
         {
-            var book = createBookDto.ToBookModel();
+            var result = await _bookService.AddBookAsync(createBookDto);
+            if (!result.Success) return BadRequest(result.ErrorMessage);
 
-            await _unitOfWork.Books.AddAsync(book);
-            await _unitOfWork.CommitAsync();
-
-            return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book.ToBookDto());
+            return CreatedAtAction(nameof(GetBook), new { id = result.Data?.Id }, result.Data);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}")]
         public async Task<ActionResult> UpdateBook([FromRoute] int id, [FromBody] UpdateBookDto updateBookDto)
         {
-            var existingBook = await _unitOfWork.Books.GetByIdAsync(id);
-
-            if (existingBook is null)
-                return NotFound("Attempt to update unexisting book");
-
-            existingBook.MapUpdateBook(updateBookDto);
-            await _unitOfWork.CommitAsync();
+            var result = await _bookService.UpdateBookAsync(id, updateBookDto);
+            if (!result.Success)
+                return result.ErrorCode switch
+                {
+                    404 => NotFound(result.ErrorMessage),
+                    _ => StatusCode(500, result.ErrorMessage)
+                };
 
             return NoContent();
         }
@@ -75,15 +69,14 @@ namespace LibraryManagement.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteBook([FromRoute] int id)
         {
-            var existingBook = await _unitOfWork.Books.GetByIdAsync(id, includeRelated: true);
-
-            if (existingBook is null)
-                return NotFound();
-            if (existingBook.Borrowings.Any(b => b.ReturnDate == null))
-                return BadRequest("Cannot delete actively borrowed book");
-
-            _unitOfWork.Books.Delete(existingBook);
-            await _unitOfWork.CommitAsync();
+            var result = await _bookService.DeleteBookAsync(id);
+            if (!result.Success)
+                return result.ErrorCode switch
+                {
+                    400 => BadRequest(result.ErrorMessage),
+                    404 => NotFound(result.ErrorMessage),
+                    _ => StatusCode(500, result.ErrorMessage)
+                };
 
             return NoContent();
         }
